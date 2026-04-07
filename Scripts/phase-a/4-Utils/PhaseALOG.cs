@@ -30,7 +30,7 @@ public static class PhaseALOG
 		});
 		return snapshot.ToNSJson(pretify: true);
 	}
-	public static string DOC_CATEGORY__TO__ITEM(Dictionary<SO_ShopCategory, List<WShopItem>> DOC)
+	public static string DOC_CATEGORY_ITEM__TO__JSON(Dictionary<SO_ShopCategory, List<WShopItem>> DOC)
 	{
 		var snapshot = DOC.map(kvp => new
 		{
@@ -42,6 +42,18 @@ public static class PhaseALOG
 				wItem.isLockedCurr,
 				wItem.timesPurchased,
 			}),
+		});
+		return snapshot.ToNSJson(pretify: true);
+	}
+	public static string LIST_CARTITEM__TO__JSON(List<ShopDataService.CartItem> CARTITEM)
+	{
+		var snapshot = CARTITEM.map(cartItem => new
+		{
+			cartItem.wShopItem.itemDef.name,
+			cartItem.wShopItem.itemDef.isDefaultLocked,
+			cartItem.wShopItem.isLockedCurr,
+			cartItem.wShopItem.timesPurchased,
+			cartItem.qty,
 		});
 		return snapshot.ToNSJson(pretify: true);
 	}
