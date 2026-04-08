@@ -51,31 +51,36 @@ public class ShopDataService
 	}
 	public List<SO_ShopCategory> GetCategories() => CATEGORY;
 	public List<WShopItem> GetWShopItems(SO_ShopCategory category) => DOC__category_wShopItem[category];
-	public bool IsAllWShopItemsLocked(SO_ShopCategory category)
+	public bool shouldCategoryBeHiddenInView(SO_ShopCategory category)
 	{
-		return DOC__category_wShopItem[category]
-				.all(wShopItem => wShopItem.isLockedCurr);
+		return (category.hideIfAllItemsLocked == true) && DOC__category_wShopItem[category].all(wShopItem => wShopItem.isLockedCurr);
 	}
 
 	public List<CartItem> GetCartItems() => CARTITEM;
-	public bool TryAddNewCartItem(WShopItem wShopItem)
+	public CartItem TryAddNewCartItem(WShopItem wShopItem)
 	{
 		// TODO, can add only if can still afford.
 		var existing = CARTITEM.find(ci => ci.wShopItem == wShopItem);
 		if (existing != null)
 		{
 			existing.qty += 1;
-			return false;
+			return existing;
 		}
 		CartItem cartItem = new CartItem() { wShopItem = wShopItem, qty = 1 };
 		CARTITEM.Add(cartItem);
-		return true;
+		return cartItem;
 	}
 	public void RemoveCartItem(CartItem cartItem)
 	{
 		CARTITEM.Remove(cartItem);
 	}
-	public void AlterCartItem(CartItem cartItem, int dQty = 1)
+	public void AlterCartItemQty(CartItem cartItem, int newQty = 2)
+	{
+		cartItem.qty  = newQty;
+		if (cartItem.qty <= 0)
+			CARTITEM.Remove(cartItem);
+	}
+	public void IncreaseCartItemQty(CartItem cartItem, int dQty = 1)
 	{
 		cartItem.qty += dQty;
 		if (cartItem.qty <= 0)
@@ -103,9 +108,10 @@ public class ShopDataService
 	#endregion
 
 	#region snapShot
-	public string GetSnapShot()
+	public string GetSnapShotForTest(string header = "when somthng happened")
 	{
 		return $@"
+{'='.repeat(4) + header + '='.repeat(4) }
 // CATEGORY
 {PhaseALOG.LIST_CATEGORY__TO__JSON(CATEGORY)}
 // DOC__category_wShopItem

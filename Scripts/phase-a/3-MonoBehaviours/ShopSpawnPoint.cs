@@ -20,4 +20,9 @@ public class ShopSpawnPoint : MonoBehaviour
 		return LIST.getRandom()
 					.transform.position;
 	}
+	private void OnDrawGizmos()
+	{
+		Gizmos.color = Color.limeGreen;
+		Gizmos.DrawWireSphere(this.transform.position, radius: 0.1f);
+	}
 }

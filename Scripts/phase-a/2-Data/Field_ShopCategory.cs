@@ -7,6 +7,7 @@ using SPACE_UTIL;
 
 public class Field_ShopCategory : MonoBehaviour
 {
+	public Button button;
 	public TextMeshProUGUI _nameText;
 	public Image _img;
 

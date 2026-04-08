@@ -12,5 +12,21 @@ using SPACE_UTIL;
 
 public class ShopUITest : MonoBehaviour
 {
-    
+	[SerializeField] ShopUI _shopUI; // to access data service for test
+	[TextArea(10, 20)]
+	string REAME = @"(INPUT.K.InstantDown(KeyCode.Space)) GameEvents.RaiseOpenShopView();
+(INPUT.K.InstantDown(KeyCode.U)) economyManager.AddMoney(100f);
+(INPUT.K.InstantDown(KeyCode.I)) economyManager.AddMoney(-50f);
+(INPUT.K.InstantDown(KeyCode.O)) LOG.AddLog(this._shopUI.GetDataServiceForTest().GetSnapShotForTest(), ""json"");";
+
+	#region Unity Life Cycle
+	private void Update()
+	{
+		EconomyManager economyManager = Singleton<EconomyManager>.Ins;
+		if (INPUT.K.InstantDown(KeyCode.Space)) GameEvents.RaiseOpenShopView();
+		else if (INPUT.K.InstantDown(KeyCode.U)) economyManager.AddMoney(100f);
+		else if (INPUT.K.InstantDown(KeyCode.I)) economyManager.AddMoney(-50f);
+		else if (INPUT.K.InstantDown(KeyCode.O)) LOG.AddLog(this._shopUI.GetDataServiceForTest().GetSnapShotForTest(), "json");
+	}
+	#endregion
 }

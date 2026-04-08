@@ -23,5 +23,6 @@ public class Field_ShopItem : MonoBehaviour
 	{
 		this._buttonBg.color = (isInteractable) ? normalCol : nonInteractableCol;
 		this._buttonText.color = (isInteractable) ? normalCol * 0.5f : nonInteractableCol * 0.5f;
+		this._addToCartButton.interactable = isInteractable;
 	}
 }

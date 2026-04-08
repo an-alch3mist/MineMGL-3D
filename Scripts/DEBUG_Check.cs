@@ -16,9 +16,9 @@ public class DEBUG_Check : MonoBehaviour
 
 	IEnumerator STIMULATE()
 	{
-		while(true)
+		while (true)
 		{
-			if (INPUT.M.InstantDown(0))
+			if (INPUT.K.HeldDown(KeyCode.LeftAlt) && INPUT.M.InstantDown(0))
 			{
 				// checkExtensionIEnumerable();
 				checkShopDataService();
@@ -54,17 +54,17 @@ public class DEBUG_Check : MonoBehaviour
 		dataService.TryAddNewCartItem(dataService.GetWShopItems(this._CATEGORY[0]).getRandom());
 		dataService.TryAddNewCartItem(dataService.GetWShopItems(this._CATEGORY[0]).getRandom());
 		dataService.TryAddNewCartItem(dataService.GetWShopItems(this._CATEGORY[0]).getRandom());
-		dataService.AlterCartItem(dataService.GetCartItems()[0], 100);
+		dataService.IncreaseCartItemQty(dataService.GetCartItems()[0], 100);
 		//
-		LOG.AddLog(dataService.GetSnapShot(), "json");
+		LOG.AddLog(dataService.GetSnapShotForTest(), "json");
 
-		dataService.AlterCartItem(dataService.GetCartItems()[0], -200);
-		LOG.AddLog(dataService.GetSnapShot(), "json");
+		dataService.IncreaseCartItemQty(dataService.GetCartItems()[0], -200);
+		LOG.AddLog(dataService.GetSnapShotForTest(), "json");
 
-		dataService.AlterCartItem(dataService.GetCartItems()[0], -(dataService.GetCartItems()[0].qty - 1));
+		dataService.IncreaseCartItemQty(dataService.GetCartItems()[0], -(dataService.GetCartItems()[0].qty - 1));
 		dataService.TryAddNewCartItem(dataService.GetCartItems()[0].wShopItem);
 		dataService.TryAddNewCartItem(dataService.GetCartItems()[0].wShopItem);
 		dataService.TryAddNewCartItem(dataService.GetCartItems()[0].wShopItem);
-		LOG.AddLog(dataService.GetSnapShot(), "json");
+		LOG.AddLog(dataService.GetSnapShotForTest(), "json");
 	}
 }

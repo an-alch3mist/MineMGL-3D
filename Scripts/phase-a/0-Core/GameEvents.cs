@@ -32,6 +32,26 @@ public static class GameEvents
 	}
 	// << when money changed
 
+	// when a certain menu state changed to enabled/disabled >>
+	public static event Action<bool> OnMenuStateChanged;
+	public static void RaiseMenuStateChanged(bool isAnyMenuOpen)
+	{
+		LogSubscribersCount(nameof(OnMenuStateChanged), OnMenuStateChanged);
+		GameEvents.OnMenuStateChanged? // if there is any subscribers
+			.Invoke(isAnyMenuOpen);
+	}
+	// << when a certain menu state changed to enabled/disabled
+
+	// when shop view is toggled >>
+	public static event Action OnOpenShopView;
+	public static void RaiseOpenShopView()
+	{
+		LogSubscribersCount(nameof(OnOpenShopView), OnOpenShopView);
+		GameEvents.OnOpenShopView? // if there is any subscribers
+			.Invoke();
+	}
+	// <<  when shop view is toggled
+
 	static void LogSubscribersCount(string name, Delegate anEvent)
 	{
 		int subsCount = anEvent?.GetInvocationList().Length ?? 0;

@@ -11,7 +11,7 @@ public class Field_ShopCartItem : MonoBehaviour
 	public Image _icon;
 	public TMP_InputField _qtyInputField;
 	public Button _addButton, _subButton, _removeButton;
-
+	//
 	public void SetData(string name, string descr, Sprite sprite)
 	{
 		this._nameText.text = name;
@@ -21,5 +21,9 @@ public class Field_ShopCartItem : MonoBehaviour
 	public void SetPrice(float price)
 	{
 		this._priceText.text = price.formatMoneyShort();
+	}
+	public void SetQty(int qty)
+	{
+		this._qtyInputField.text = qty.ToString();
 	}
 }

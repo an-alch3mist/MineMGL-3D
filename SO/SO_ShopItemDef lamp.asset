@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: SO_ShopItemDef lamp
   m_EditorClassIdentifier: Assembly-CSharp::SO_ShopItemDef
   itemDefName: lamp
-  descr: lamp
-  defaultPrice: 0
+  descr: to see in dark zones.
+  defaultPrice: 100
   isDefaultLocked: 0
   sprite: {fileID: 21300000, guid: 4c7ae82cb6b7eb2409a6da11f15e8296, type: 3}
-  pfObject: {fileID: 8830597732622457419, guid: 90335b526d053f3409af0f649daae7e6, type: 3}
+  pfObject: {fileID: 6397356629837198329, guid: 3a5bc3d1304329e4ba8fddd24c008142, type: 3}
   maxStackableCount: 10
