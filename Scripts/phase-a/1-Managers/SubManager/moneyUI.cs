@@ -22,13 +22,15 @@ public class moneyUI : Singleton<moneyUI>
 	{
 		if(isFirstEnable == true)
 		{
-
+			// do somthng
 			isFirstEnable = false;
+			GameEvents.OnMoneyChanged += HandleMoneyChanged;
 		}
-		GameEvents.OnMoneyChanged += HandleMoneyChanged;
 	}
+	/*
 	private void OnDisable() // this also include when scene is being switched or Application.Quit(), or exist GameMode in Editor.
 	{
-		GameEvents.OnMoneyChanged -= HandleMoneyChanged;
+		// GameEvents.OnMoneyChanged -= HandleMoneyChanged;
 	}
+	*/
 }
