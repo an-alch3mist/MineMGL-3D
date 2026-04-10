@@ -200,13 +200,14 @@ public class ShopUIOrchestrator : MonoBehaviour
 	{
 		this._purchaseButton.onClick.AddListener(() => PurchaseAllCartItems());
 	}
-	#endregion
-
-	#region Unity Life Cycle
-	void HandleMoneyChanged(float money)
+	public void HandleMoneyChanged(float money)
 	{
 		RefreshAllRequired();
 	}
+	#endregion
+
+	/*
+	#region Unity Life Cycle
 	private void OnEnable()
 	{
 		GameEvents.OnMoneyChanged += HandleMoneyChanged;
@@ -217,4 +218,5 @@ public class ShopUIOrchestrator : MonoBehaviour
 		GameEvents.OnMoneyChanged -= HandleMoneyChanged;
 	}
 	#endregion
+	*/
 }

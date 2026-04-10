@@ -1391,7 +1391,7 @@ MonoBehaviour:
   _CATEGORY:
   - {fileID: 11400000, guid: c4ed938d533944e49a8d3883035dfaec, type: 2}
   - {fileID: 11400000, guid: 4881c286c01512b4daf7331c2369938e, type: 2}
-  _orchestor: {fileID: 593610298}
+  _orchestrator: {fileID: 593610298}
 --- !u!114 &593610298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2759,6 +2759,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73eccdef3461df944ba576944db86755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DEBUG_Check
+  isFirstEnable: 1
   _LIST: 01000100
   _CATEGORY:
   - {fileID: 11400000, guid: c4ed938d533944e49a8d3883035dfaec, type: 2}

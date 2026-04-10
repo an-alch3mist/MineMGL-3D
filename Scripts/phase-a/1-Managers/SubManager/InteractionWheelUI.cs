@@ -32,7 +32,7 @@ public class InteractionWheelUI : Singleton<InteractionWheelUI>
 		GameEvents.OnOpenInteractionView += (allInteractions, obj) =>
 		{
 			this.gameObject.SetActive(true);
-			this._orchestrator.BuildInteractionsView(allInteractions, obj)
+			this._orchestrator.BuildInteractionsView(allInteractions, obj);
 		};
 		GameEvents.OnCloseInteractionView+= () => this.gameObject.SetActive(false);
 		//

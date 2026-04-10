@@ -13,11 +13,10 @@ using SPACE_UTIL;
 /// <summary>
 /// toggle shop ui panel
 /// </summary>
-[DefaultExecutionOrder(1)]
 public class ShopUI : MonoBehaviour
 {
 	[SerializeField] List<SO_ShopCategory> _CATEGORY;
-	[SerializeField] ShopUIOrchestrator _orchestor;
+	[SerializeField] ShopUIOrchestrator _orchestrator;
 
 	#region private API
 	ShopDataService shopDataService = new ShopDataService();
@@ -25,6 +24,8 @@ public class ShopUI : MonoBehaviour
 	#endregion
 
 	#region Unity Life 
+	/*
+	==== before ====
 	private void OnEnable()
 	{
 		Debug.Log(C.method(this));
@@ -42,6 +43,31 @@ public class ShopUI : MonoBehaviour
 		GameEvents.OnCloseShopView += () => this.gameObject.SetActive(false);
 		//
 		this.gameObject.SetActive(false); // deactivate once setup
+	}
+	==== before ====
+	*/
+	bool isFirstEnable = true;
+	private void OnEnable()
+	{
+		Debug.Log(C.method(this));
+		if(isFirstEnable)
+		{
+			Debug.Log("shopUI first time enabled".colorTag("lime"));
+			shopDataService.BuildCategories(this._CATEGORY);
+			this._orchestrator.Init(shopDataService, this._CATEGORY); // link the shopDataService and the LIST<category> into orchestor
+			this._orchestrator.BuildAndOrchestrateCategoryView();
+			this._orchestrator.WirePurchaseButton();
+			this._orchestrator.HandleMoneyChanged(C.Random()); // refreshAllRequired() when money chenged
+
+			GameEvents.OnOpenShopView += () => this.gameObject.SetActive(true);
+			GameEvents.OnCloseShopView += () => this.gameObject.SetActive(false);
+
+			GameEvents.OnMoneyChanged += this._orchestrator.HandleMoneyChanged;
+			// 
+			this.gameObject.SetActive(false); // once all setup done, deactivate;
+			isFirstEnable = false;
+		}
+		GameEvents.RaiseMenuStateChanged(isAnyMenuOpen: true);
 	}
 	private void Update()
 	{

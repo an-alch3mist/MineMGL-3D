@@ -13,6 +13,22 @@ public class DEBUG_Check : MonoBehaviour
 		StopAllCoroutines();
 		StartCoroutine(STIMULATE());
 	}
+	[Header("just to log")]
+	[SerializeField] bool isFirstEnable = true;
+	private void OnEnable()
+	{
+		Debug.Log(C.method(this));
+		if(isFirstEnable)
+		{
+			Debug.Log("logic at first enable".colorTag("lime"));
+			isFirstEnable = false;
+		}
+		Debug.Log("logic after firstEnable is performed".colorTag("cyan"));
+	}
+	private void OnDisable()
+	{
+		Debug.Log(C.method(this, "orange"));
+	}
 
 	IEnumerator STIMULATE()
 	{
