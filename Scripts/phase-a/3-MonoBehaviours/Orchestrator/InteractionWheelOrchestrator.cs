@@ -17,10 +17,19 @@ using SPACE_UTIL;
 [DefaultExecutionOrder(2)] // after ....UI.Awake() is done
 public class InteractionWheelOrchestrator : MonoBehaviour
 {
-	#region public API
-	public void BuildInteractionsView(List<SO_Interaction> INTERACTIONS)
-	{
+	#region inspector fields
+	[SerializeField] Transform _container;
+	[SerializeField] GameObject _pfButton; 
+	#endregion
 
+	#region public API
+	public void BuildInteractionsView(List<SO_Interaction> INTERACTION, GameObject obj)
+	{
+		this._container.destroyLeaves();
+		foreach(var interaction in INTERACTION)
+		{
+
+		}
 	}
 	#endregion
 }

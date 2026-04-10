@@ -29,10 +29,10 @@ public class InteractionWheelUI : Singleton<InteractionWheelUI>
 
 		// no init() for InteractionOrchestrator.Init() as ShopUIOrchestrator.Init()
 
-		GameEvents.OnOpenInteractionView += (all_interactions) =>
+		GameEvents.OnOpenInteractionView += (allInteractions, obj) =>
 		{
 			this.gameObject.SetActive(true);
-			this._orchestrator.BuildInteractionsView(all_interactions);
+			this._orchestrator.BuildInteractionsView(allInteractions, obj)
 		};
 		GameEvents.OnCloseInteractionView+= () => this.gameObject.SetActive(false);
 		//
