@@ -11,7 +11,8 @@ using TMPro;
 using SPACE_UTIL;
 
 /// <summary>
-/// toggle shop ui panel
+/// toggle UI + events on enable/disable handled here, reamining dynamic button or inputField events inside orchestrator
+/// reads data from DataService
 /// </summary>
 public class ShopUI : MonoBehaviour
 {
@@ -55,14 +56,17 @@ public class ShopUI : MonoBehaviour
 			Debug.Log("shopUI first time enabled".colorTag("lime"));
 			shopDataService.BuildCategories(this._CATEGORY);
 			this._orchestrator.Init(shopDataService, this._CATEGORY); // link the shopDataService and the LIST<category> into orchestor
+			this._orchestrator.RefreshAllRequired(); // refreshAllRequired() when money chenged, requires shopDataService to be initialized or != null
+
 			this._orchestrator.BuildAndOrchestrateCategoryView();
-			this._orchestrator.WirePurchaseButton();
-			this._orchestrator.HandleMoneyChanged(C.Random()); // refreshAllRequired() when money chenged
+			this._orchestrator.OrchestratePurchaseButton();
 
 			GameEvents.OnOpenShopView += () => this.gameObject.SetActive(true);
 			GameEvents.OnCloseShopView += () => this.gameObject.SetActive(false);
 
-			GameEvents.OnMoneyChanged += this._orchestrator.HandleMoneyChanged;
+			GameEvents.OnMoneyChanged += (money) => this._orchestrator.RefreshAllRequired();
+
+			GameEvents.OnUnlockedCategory += (category) => shopDataService.UnlockEntireCategory(category);
 			// 
 			this.gameObject.SetActive(false); // once all setup done, deactivate;
 			isFirstEnable = false;

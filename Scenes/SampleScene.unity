@@ -2776,6 +2776,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopUITest
   _shopUI: {fileID: 593610297}
+  _category: {fileID: 11400000, guid: 4881c286c01512b4daf7331c2369938e, type: 2}
 --- !u!1 &1562458738
 GameObject:
   m_ObjectHideFlags: 0

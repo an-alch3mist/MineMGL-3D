@@ -51,6 +51,16 @@ public class ShopDataService
 	}
 	public List<SO_ShopCategory> GetCategories() => CATEGORY;
 	public List<WShopItem> GetWShopItems(SO_ShopCategory category) => DOC__category_wShopItem[category];
+	public void UnlockWShopItem(SO_ShopItemDef itemDef)
+	{
+		DOC__category_wShopItem.Values.flatMap(val => val)
+			.find(wShopItem => wShopItem.itemDef == itemDef)
+			.isLockedCurr = false;
+	}
+	public void UnlockEntireCategory(SO_ShopCategory category)
+	{
+		DOC__category_wShopItem[category].forEach(wShopItem => wShopItem.isLockedCurr = false);
+	}
 	public bool shouldCategoryBeHiddenInView(SO_ShopCategory category)
 	{
 		return (category.hideIfAllItemsLocked == true) && DOC__category_wShopItem[category].all(wShopItem => wShopItem.isLockedCurr);

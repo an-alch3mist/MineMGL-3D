@@ -5,10 +5,10 @@ using TMPro;
 using SPACE_UTIL;
 
 /// <summary>
-/// create wires UI listeners, instantiate + destory of prefabs, += when to RefreshAll
+/// toggle UI + events on enable/disable handled here, reamining dynamic button or inputField events inside orchestrator
 /// reads data from DataService
 /// </summary>
-public class moneyOrchestrator : Singleton<moneyOrchestrator>
+public class moneyUI : Singleton<moneyUI>
 {
 	[SerializeField] TextMeshProUGUI _moneyText;
 
@@ -17,10 +17,15 @@ public class moneyOrchestrator : Singleton<moneyOrchestrator>
 		EconomyManager economyManager = Singleton<EconomyManager>.Ins;
 		_moneyText.SetText(economyManager.GetMoney().formatMoney());
 	}
+	bool isFirstEnable = true;
 	private void OnEnable()
 	{
-		GameEvents.OnMoneyChanged += HandleMoneyChanged;
+		if(isFirstEnable == true)
+		{
 
+			isFirstEnable = false;
+		}
+		GameEvents.OnMoneyChanged += HandleMoneyChanged;
 	}
 	private void OnDisable() // this also include when scene is being switched or Application.Quit(), or exist GameMode in Editor.
 	{

@@ -19,6 +19,8 @@ public class ShopUITest : MonoBehaviour
 (INPUT.K.InstantDown(KeyCode.I)) economyManager.AddMoney(-50f);
 (INPUT.K.InstantDown(KeyCode.O)) LOG.AddLog(this._shopUI.GetDataServiceForTest().GetSnapShotForTest(), ""json"");";
 
+	[Header("category")]
+	[SerializeField] SO_ShopCategory _category;
 	#region Unity Life Cycle
 	private void Update()
 	{
@@ -27,6 +29,7 @@ public class ShopUITest : MonoBehaviour
 		else if (INPUT.K.InstantDown(KeyCode.U)) economyManager.AddMoney(100f);
 		else if (INPUT.K.InstantDown(KeyCode.I)) economyManager.AddMoney(-50f);
 		else if (INPUT.K.InstantDown(KeyCode.O)) LOG.AddLog(this._shopUI.GetDataServiceForTest().GetSnapShotForTest(), "json");
+		else if (INPUT.K.InstantDown(KeyCode.P)) GameEvents.RaiseUnlockedCategory(this._category);
 	}
 	#endregion
 }

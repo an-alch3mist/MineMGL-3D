@@ -132,12 +132,7 @@ public class ShopUIOrchestrator : MonoBehaviour
 		});
 		// << Orchestrate
 	}
-	void RefreshAllRequired()
-	{
-		this._cartTotalPriceText.text = shopDataService.GetCartTotalPrice().formatMoney();
-		this._cartTotalPriceText.color = (shopDataService.CanAffordCartItems()) ? this._canAffordColor : this._cannotAffordColor;
-		this._purchaseButton.interactable = shopDataService.CanAffordCartItems();
-	}
+	
 
 	void PurchaseAllCartItems()
 	{
@@ -196,13 +191,15 @@ public class ShopUIOrchestrator : MonoBehaviour
 		if (firstUnlockedCategory != null)
 			SelectCategoryView(firstUnlockedCategory);
 	}
-	public void WirePurchaseButton()
+	public void OrchestratePurchaseButton()
 	{
 		this._purchaseButton.onClick.AddListener(() => PurchaseAllCartItems());
 	}
-	public void HandleMoneyChanged(float money)
+	public void RefreshAllRequired()
 	{
-		RefreshAllRequired();
+		this._cartTotalPriceText.text = shopDataService.GetCartTotalPrice().formatMoney();
+		this._cartTotalPriceText.color = (shopDataService.CanAffordCartItems()) ? this._canAffordColor : this._cannotAffordColor;
+		this._purchaseButton.interactable = shopDataService.CanAffordCartItems();
 	}
 	#endregion
 

@@ -80,6 +80,16 @@ public static class GameEvents
 	}
 	// <<  when shop view is toggled
 
+	// when anyCategory is unlocked >>
+	public static event Action<SO_ShopCategory> OnUnlockedCategory;
+	public static void RaiseUnlockedCategory(SO_ShopCategory category)
+	{
+		LogSubscribersCount(nameof(OnUnlockedCategory), OnUnlockedCategory);
+		GameEvents.OnUnlockedCategory? // if there is any subscribers
+			.Invoke(category);
+	}
+	// << when anyCategory is unlocked
+
 	static void LogSubscribersCount(string name, Delegate anEvent)
 	{
 		int subsCount = anEvent?.GetInvocationList().Length ?? 0;
