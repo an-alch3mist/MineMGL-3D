@@ -51,6 +51,34 @@ public static class GameEvents
 			.Invoke();
 	}
 	// <<  when shop view is toggled
+	// when shop view is toggled >>
+	public static event Action OnCloseShopView;
+	public static void RaiseCloseShopView()
+	{
+		LogSubscribersCount(nameof(OnCloseShopView), OnCloseShopView);
+		GameEvents.OnCloseShopView? // if there is any subscribers
+			.Invoke();
+	}
+	// <<  when shop view is toggled
+
+	// when interaction view is toggled >>
+	public static event Action<List<SO_Interaction>> OnOpenInteractionView;
+	public static void RaiseOpenInteractionView(List<SO_Interaction> INTERACTION)
+	{
+		LogSubscribersCount(nameof(OnOpenInteractionView), OnOpenInteractionView);
+		GameEvents.OnOpenInteractionView? // if there is any subscribers
+			.Invoke(INTERACTION);
+	}
+	// <<  when shop view is toggled
+	// when shop view is toggled >>
+	public static event Action OnCloseInteractionView;
+	public static void RaiseCloseInteractionView()
+	{
+		LogSubscribersCount(nameof(OnCloseInteractionView), OnCloseInteractionView);
+		GameEvents.OnCloseInteractionView? // if there is any subscribers
+			.Invoke();
+	}
+	// <<  when shop view is toggled
 
 	static void LogSubscribersCount(string name, Delegate anEvent)
 	{

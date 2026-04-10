@@ -12,7 +12,7 @@ using SPACE_UTIL;
 
 public class ShopSpawnPoint : MonoBehaviour
 {
-	public Vector3 GetRandomSpawnPoint()
+	public static Vector3 GetRandomSpawnPoint()
 	{
 		var LIST = GameObject.FindObjectsOfType<ShopSpawnPoint>().ToList();
 		if (LIST == null) return Vector3.zero;

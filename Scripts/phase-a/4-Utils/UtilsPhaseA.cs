@@ -24,4 +24,15 @@ public static class UtilsPhaseA
 	/// <param name="money"></param>
 	/// <returns></returns>
 	public static string formatMoneyShort(this float money) => $"${money:#,##0.##}";
+
+	public static bool TrySpawnAtPoint(SO_ShopItemDef itemDef, int qty)
+	{
+		var point = ShopSpawnPoint.GetRandomSpawnPoint();
+		for(int i0 = 0; i0 < qty; i0 += 1)
+		{
+			Vector3 offset = C.RandomInsideUnitSphere(); offset.y = offset.y.abs();
+			GameObject.Instantiate(itemDef.pfObject).transform.position = point + offset * 0.3f;
+		}
+		return true;
+	}
 }

@@ -11,9 +11,10 @@ using TMPro;
 using SPACE_UTIL;
 
 /// <summary>
-/// create wires UI listeners, instantiate + destory of prefabs
+/// create wires UI listeners, instantiate + destory of prefabs, += when to RefreshAll
 /// reads data from DataService
 /// </summary>
+[DefaultExecutionOrder(2)]
 public class ShopUIOrchestrator : MonoBehaviour
 {
 	#region Inspector Fields
@@ -80,12 +81,12 @@ public class ShopUIOrchestrator : MonoBehaviour
 			// when add to cart was pressed
 			fieldWShopItem._addToCartButton.onClick.AddListener(() =>
 			{
-				createAndOrchestrateCartItemField(wShopItem);
-				UpdateCartTotalPriceAndColor();
+				CreateAndOrchestrateCartItemFields(wShopItem);
+				RefreshAllRequired();
 			});
 		}
 	}
-	void createAndOrchestrateCartItemField(WShopItem wShopItem)
+	void CreateAndOrchestrateCartItemFields(WShopItem wShopItem)
 	{
 		// create >>
 		var cartItem = shopDataService.TryAddNewCartItem(wShopItem);
@@ -106,7 +107,7 @@ public class ShopUIOrchestrator : MonoBehaviour
 		{
 			Debug.Log($"input field was edited by submit");
 			shopDataService.AlterCartItemQty(cartItem, str.parseInt());
-			UpdateCartTotalPriceAndColor();
+			RefreshAllRequired();
 		});
 
 		fieldCartItem._removeButton.onClick.AddListener(() =>
@@ -114,27 +115,52 @@ public class ShopUIOrchestrator : MonoBehaviour
 			shopDataService.RemoveCartItem(cartItem);
 			GameObject.Destroy(DOC__CartItem__Field[cartItem].gameObject);
 			DOC__CartItem__Field.Remove(cartItem);
-			UpdateCartTotalPriceAndColor();
+			RefreshAllRequired();
 		});
 
 		fieldCartItem._addButton.onClick.AddListener(() =>
 		{
 			shopDataService.IncreaseCartItemQty(cartItem, +1);
 			fieldCartItem._qtyInputField.text = cartItem.qty.ToString();
-			UpdateCartTotalPriceAndColor();
+			RefreshAllRequired();
 		});
 		fieldCartItem._subButton.onClick.AddListener(() =>
 		{
 			shopDataService.IncreaseCartItemQty(cartItem, -1);
 			fieldCartItem._qtyInputField.text = cartItem.qty.ToString();
-			UpdateCartTotalPriceAndColor();
+			RefreshAllRequired();
 		});
 		// << Orchestrate
 	}
-	void UpdateCartTotalPriceAndColor()
+	void RefreshAllRequired()
 	{
 		this._cartTotalPriceText.text = shopDataService.GetCartTotalPrice().formatMoney();
 		this._cartTotalPriceText.color = (shopDataService.CanAffordCartItems()) ? this._canAffordColor : this._cannotAffordColor;
+		this._purchaseButton.interactable = shopDataService.CanAffordCartItems();
+	}
+
+	void PurchaseAllCartItems()
+	{
+		var CART_ITEM = DOC__CartItem__Field.map(kvp => kvp.Key).ToList(); // the .ToList() performs copy operation
+		// var CART_ITEM = DOC__CartItem__Field.map(kvp => kvp.Key) /// -> error if tryna remove from for loopwhile iterating through it without .ToList(), copy.
+		// reason: foreach breaks because it uses an IEnumerator. The enumerator checks if the collection's "version" changed after every MoveNext(). If you Add/Remove, version changes → InvalidOperationException.
+
+		foreach (var cartItem in CART_ITEM)
+		{
+			var field = DOC__CartItem__Field[cartItem];
+			float cost = cartItem.wShopItem.itemDef.defaultPrice * cartItem.qty;
+
+			UtilsPhaseA.TrySpawnAtPoint(cartItem.wShopItem.itemDef, cartItem.qty);
+			// remove
+			shopDataService.RemoveCartItem(cartItem);
+			GameObject.Destroy(DOC__CartItem__Field[cartItem].gameObject);
+			DOC__CartItem__Field.Remove(cartItem);
+			// update money and everything related to it.
+			economyManager.AddMoney(deltaMoney: -cost);
+			GameEvents.RaiseMoneyChanged(economyManager.GetMoney());
+		}
+		RefreshAllRequired();
+		GameEvents.RaiseCloseShopView();
 	}
 	#endregion
 
@@ -145,7 +171,7 @@ public class ShopUIOrchestrator : MonoBehaviour
 		this.CATEGORY = CATEGORY;
 	}
 	//
-	public void BuildCategoryView()
+	public void BuildAndOrchestrateCategoryView()
 	{
 		this._categoryContainer.destroyLeaves();
 		DOC__Category__Field.Clear();
@@ -170,17 +196,21 @@ public class ShopUIOrchestrator : MonoBehaviour
 		if (firstUnlockedCategory != null)
 			SelectCategoryView(firstUnlockedCategory);
 	}
+	public void WirePurchaseButton()
+	{
+		this._purchaseButton.onClick.AddListener(() => PurchaseAllCartItems());
+	}
 	#endregion
 
 	#region Unity Life Cycle
 	void HandleMoneyChanged(float money)
 	{
-		UpdateCartTotalPriceAndColor();
+		RefreshAllRequired();
 	}
 	private void OnEnable()
 	{
 		GameEvents.OnMoneyChanged += HandleMoneyChanged;
-		UpdateCartTotalPriceAndColor();
+		RefreshAllRequired();
 	}
 	private void OnDisable()
 	{

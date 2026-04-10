@@ -4,6 +4,10 @@ using TMPro;
 
 using SPACE_UTIL;
 
+/// <summary>
+/// create wires UI listeners, instantiate + destory of prefabs, += when to RefreshAll
+/// reads data from DataService
+/// </summary>
 public class moneyOrchestrator : Singleton<moneyOrchestrator>
 {
 	[SerializeField] TextMeshProUGUI _moneyText;
@@ -18,7 +22,7 @@ public class moneyOrchestrator : Singleton<moneyOrchestrator>
 		GameEvents.OnMoneyChanged += HandleMoneyChanged;
 
 	}
-	private void OnDisable()
+	private void OnDisable() // this also include when scene is being switched or Application.Quit(), or exist GameMode in Editor.
 	{
 		GameEvents.OnMoneyChanged -= HandleMoneyChanged;
 	}

@@ -13,6 +13,7 @@ using SPACE_UTIL;
 /// <summary>
 /// toggle shop ui panel
 /// </summary>
+[DefaultExecutionOrder(1)]
 public class ShopUI : MonoBehaviour
 {
 	[SerializeField] List<SO_ShopCategory> _CATEGORY;
@@ -29,15 +30,18 @@ public class ShopUI : MonoBehaviour
 		Debug.Log(C.method(this));
 		GameEvents.RaiseMenuStateChanged(isAnyMenuOpen: true); // for cursorLock purpose
 	}
-	private void Start()
+	private void Awake()
 	{
 		Debug.Log(C.method(this, adMssg: "all data service build, orchestor is done here"));
 		shopDataService.BuildCategories(this._CATEGORY);
 		this._orchestor.Init(shopDataService, this._CATEGORY); // link the shopDataService and the LIST<category> into orchestor
-		this._orchestor.BuildCategoryView();
+		this._orchestor.BuildAndOrchestrateCategoryView();
+		this._orchestor.WirePurchaseButton();
 
 		GameEvents.OnOpenShopView += () => this.gameObject.SetActive(true);
-		this.gameObject.SetActive(false);
+		GameEvents.OnCloseShopView += () => this.gameObject.SetActive(false);
+		//
+		this.gameObject.SetActive(false); // deactivate once setup
 	}
 	private void Update()
 	{
