@@ -54,19 +54,13 @@ public class ShopUI : MonoBehaviour
 		if(isFirstEnable)
 		{
 			Debug.Log("shopUI first time enabled".colorTag("lime"));
+			// ------------------------------------------------------------------------------------------- //
 			shopDataService.BuildCategories(this._CATEGORY);
-			this._orchestrator.Init(shopDataService, this._CATEGORY); // link the shopDataService and the LIST<category> into orchestor
-			this._orchestrator.RefreshAllRequired(); // refreshAllRequired() when money chenged, requires shopDataService to be initialized or != null
-
-			this._orchestrator.BuildAndOrchestrateCategoryView();
-			this._orchestrator.OrchestratePurchaseButton();
+			this._orchestrator.InitBuildOrchestrateAndSubscribe(shopDataService, this._CATEGORY); // link the shopDataService and the LIST<category> into orchestor
+			// ------------------------------------------------------------------------------------------- //
 
 			GameEvents.OnOpenShopView += () => this.gameObject.SetActive(true);
 			GameEvents.OnCloseShopView += () => this.gameObject.SetActive(false);
-
-			GameEvents.OnMoneyChanged += (money) => this._orchestrator.RefreshAllRequired();
-
-			GameEvents.OnUnlockedCategory += (category) => shopDataService.UnlockEntireCategory(category);
 			// 
 			this.gameObject.SetActive(false); // once all setup done, deactivate;
 			isFirstEnable = false;

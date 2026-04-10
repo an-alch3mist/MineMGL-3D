@@ -157,16 +157,8 @@ public class ShopUIOrchestrator : MonoBehaviour
 		RefreshAllRequired();
 		GameEvents.RaiseCloseShopView();
 	}
-	#endregion
-
-	#region public API
-	public void Init(ShopDataService shopDataService, List<SO_ShopCategory> CATEGORY)
-	{
-		this.shopDataService = shopDataService;
-		this.CATEGORY = CATEGORY;
-	}
 	//
-	public void BuildAndOrchestrateCategoryView()
+	void BuildAndOrchestrateCategoryView()
 	{
 		this._categoryContainer.destroyLeaves();
 		DOC__Category__Field.Clear();
@@ -191,29 +183,33 @@ public class ShopUIOrchestrator : MonoBehaviour
 		if (firstUnlockedCategory != null)
 			SelectCategoryView(firstUnlockedCategory);
 	}
-	public void OrchestratePurchaseButton()
+	void OrchestratePurchaseButton()
 	{
 		this._purchaseButton.onClick.AddListener(() => PurchaseAllCartItems());
 	}
-	public void RefreshAllRequired()
+	void RefreshAllRequired()
 	{
 		this._cartTotalPriceText.text = shopDataService.GetCartTotalPrice().formatMoney();
 		this._cartTotalPriceText.color = (shopDataService.CanAffordCartItems()) ? this._canAffordColor : this._cannotAffordColor;
-		this._purchaseButton.interactable = shopDataService.CanAffordCartItems();
+		this._purchaseButton.interactable = shopDataService.CanAffordCartItems() && (shopDataService.GetCartItems().Count != 0);
+	}
+	void SubscribeMoneyAndItemUnlock()
+	{
+		GameEvents.OnMoneyChanged += (money) => RefreshAllRequired();
+		GameEvents.OnUnlockedCategory += (category) => shopDataService.UnlockEntireCategory(category);
 	}
 	#endregion
 
-	/*
-	#region Unity Life Cycle
-	private void OnEnable()
+	#region public API
+	public void InitBuildOrchestrateAndSubscribe(ShopDataService shopDataService, List<SO_ShopCategory> CATEGORY)
 	{
-		GameEvents.OnMoneyChanged += HandleMoneyChanged;
-		RefreshAllRequired();
-	}
-	private void OnDisable()
-	{
-		GameEvents.OnMoneyChanged -= HandleMoneyChanged;
+		this.shopDataService = shopDataService;
+		this.CATEGORY = CATEGORY;
+
+		RefreshAllRequired(); // refreshAllRequired() when money chenged, requires shopDataService to be initialized or != null
+		BuildAndOrchestrateCategoryView();
+		OrchestratePurchaseButton();
+		SubscribeMoneyAndItemUnlock();
 	}
 	#endregion
-	*/
 }
