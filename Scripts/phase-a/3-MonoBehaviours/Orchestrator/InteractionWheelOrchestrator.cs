@@ -19,17 +19,34 @@ public class InteractionWheelOrchestrator : MonoBehaviour
 {
 	#region inspector fields
 	[SerializeField] Transform _container;
-	[SerializeField] GameObject _pfButton; 
+	[SerializeField] GameObject _pfInteractionOption;
+	#endregion
+
+	#region private API
+
+	void ErazeAndBuildOptionsView(List<SO_InteractionOption> OPTION, IInteractable interactable)
+	{
+		this._container.destroyLeaves();
+		foreach (var option in OPTION)
+		{
+			var field = GameObject.Instantiate(this._pfInteractionOption, this._container)
+									.gc<Field_InteractionOption>();
+			field.SetData(option.interactionName, option.sprite);
+			field._button.onClick.AddListener(() =>
+			{
+				interactable.Interact(option);
+			});
+		}
+	}
 	#endregion
 
 	#region public API
-	public void BuildInteractionsView(List<SO_Interaction> INTERACTION, GameObject obj)
+	public void Init(GameObject obj)
 	{
-		this._container.destroyLeaves();
-		foreach(var interaction in INTERACTION)
-		{
-
-		}
+		ErazeAndBuildOptionsView(
+			OPTION: obj.GetComponent<IInteractable>().GetInteractions(), 
+			interactable: obj.GetComponent<IInteractable>()
+		);
 	}
 	#endregion
 }

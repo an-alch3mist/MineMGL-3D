@@ -15,28 +15,26 @@ using SPACE_UTIL;
 [DefaultExecutionOrder(1)] // occurs before its orchestrator 
 public class InteractionWheelUI : Singleton<InteractionWheelUI>
 {
-	List<SO_Interaction> INTERACTION;
+	List<SO_InteractionOption> INTERACTION;
 	[SerializeField] InteractionWheelOrchestrator _orchestrator;
 	#region Unity Life 
+	bool isFirstEnable = true;
 	private void OnEnable()
 	{
 		Debug.Log(C.method(this));
-		GameEvents.RaiseMenuStateChanged(isAnyMenuOpen: true); // for cursorLock purpose
-	}
-	private void Awake()
-	{
-		Debug.Log(C.method(this, adMssg: "all data service build, orchestor is done here"));
-
-		// no init() for InteractionOrchestrator.Init() as ShopUIOrchestrator.Init()
-
-		GameEvents.OnOpenInteractionView += (allInteractions, obj) =>
+		if (isFirstEnable)
 		{
-			this.gameObject.SetActive(true);
-			this._orchestrator.BuildInteractionsView(allInteractions, obj);
-		};
-		GameEvents.OnCloseInteractionView+= () => this.gameObject.SetActive(false);
-		//
-		this.gameObject.SetActive(false); // deactivate once setup complete
+			GameEvents.OnOpenInteractionView += (obj) =>
+			{
+				this.gameObject.SetActive(true);
+				this._orchestrator.Init(obj);
+			};
+			GameEvents.OnCloseInteractionView += () => this.gameObject.SetActive(false);
+			//
+			this.gameObject.SetActive(false); // deactivate once setup complete
+			isFirstEnable = false;
+		}
+		GameEvents.RaiseMenuStateChanged(isAnyMenuOpen: true); // for cursorLock purpose
 	}
 	private void Update()
 	{

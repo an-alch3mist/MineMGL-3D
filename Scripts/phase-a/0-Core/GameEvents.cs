@@ -62,12 +62,12 @@ public static class GameEvents
 	// <<  when shop view is toggled
 
 	// when interaction view is toggled >>
-	public static event Action<List<SO_Interaction>, GameObject> OnOpenInteractionView;
-	public static void RaiseOpenInteractionView(List<SO_Interaction> INTERACTION, GameObject obj)
+	public static event Action<GameObject> OnOpenInteractionView;
+	public static void RaiseOpenInteractionView(GameObject obj)
 	{
 		LogSubscribersCount(nameof(OnOpenInteractionView), OnOpenInteractionView);
 		GameEvents.OnOpenInteractionView? // if there is any subscribers
-			.Invoke(INTERACTION, obj);
+			.Invoke(obj);
 	}
 	// <<  when shop view is toggled
 	// when shop view is toggled >>

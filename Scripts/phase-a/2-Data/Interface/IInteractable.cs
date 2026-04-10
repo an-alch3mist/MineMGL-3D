@@ -8,7 +8,7 @@ public interface IInteractable
 {
 	string GetObjectName();
 	bool ShouldUseInteractionWheel();
-	List<SO_Interaction> GetInteractions();
+	List<SO_InteractionOption> GetInteractions();
 
-	void Interact(SO_Interaction selectedInteraction);
+	void Interact(SO_InteractionOption selectedInteraction);
 }
