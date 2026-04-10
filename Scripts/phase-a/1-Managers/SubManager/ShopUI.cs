@@ -58,7 +58,7 @@ public class ShopUI : MonoBehaviour
 			shopDataService.BuildCategories(this._CATEGORY);
 			this._orchestrator.InitBuildOrchestrateAndSubscribe(shopDataService, this._CATEGORY); // link the shopDataService and the LIST<category> into orchestor
 			// ------------------------------------------------------------------------------------------- //
-
+			// Self Subscribed to View and disabled after setup, // TODO Unsubscribe on disable() / on destroy()
 			GameEvents.OnOpenShopView += () => this.gameObject.SetActive(true);
 			GameEvents.OnCloseShopView += () => this.gameObject.SetActive(false);
 			// 
@@ -69,11 +69,12 @@ public class ShopUI : MonoBehaviour
 	}
 	private void Update()
 	{
+		// 
 		if (INPUT.K.InstantDown(KeyCode.E) || INPUT.K.InstantDown(KeyCode.Escape))
 		{
 			Debug.Log("toggle false");
 			// .toggle is in namespace SPACE_UTIL as extension behaves same as .SetActive();
-			this.gameObject.toggle(value: false);
+			GameEvents.RaiseCloseShopView();
 		}
 	}
 	private void OnDisable()
