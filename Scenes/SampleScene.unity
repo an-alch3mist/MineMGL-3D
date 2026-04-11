@@ -1211,7 +1211,7 @@ Transform:
   m_GameObject: {fileID: 387540962}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4}
+  m_LocalPosition: {x: 0.784, y: 0, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1936,7 +1936,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 270, y: 0, z: 0}
-    m_Scale: {x: 1.36, y: 2.6, z: 0.04}
+    m_Scale: {x: 3, y: 2.93, z: 0.2}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -6392,9 +6392,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraShaker
   _player: {fileID: 446653837}
   _posAmp: 0.05
-  _rotAmp: 0.2
+  _rotAmp: 0.4
   _posFreq: 0.2
-  _rotFreq: 0.1
+  _rotFreq: 0.2
 --- !u!1 &465485021
 GameObject:
   m_ObjectHideFlags: 0
@@ -6452,7 +6452,7 @@ Transform:
   m_GameObject: {fileID: 515940803}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710677, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -1.5, y: 14.5, z: 4}
+  m_LocalPosition: {x: -2, y: 14.5, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

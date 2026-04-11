@@ -79,7 +79,7 @@ public class StartingElevator : MonoBehaviour
 			this._landingParticlesObj.SetActive(true);
 			// purpose: other system react to this landing (sound, tutorial, effects etc....)
 			GameEvents.RaiseElevatorLanded();
-			GameEvents.RaiseCamViewPunch(new Vector3(3f, 0.5f, 0.4f), duration: 0.25f);
+			GameEvents.RaiseCamViewPunch(new Vector3(3.5f, 0.7f, 0.5f), duration: 0.4f);
 		}
 	}
 	private void OnDisable()

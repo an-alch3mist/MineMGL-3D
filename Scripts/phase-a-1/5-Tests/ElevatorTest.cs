@@ -11,7 +11,7 @@ public class ElevatorTest : MonoBehaviour
 			this._startingElevator.gameObject.SetActive(false);
 			this._startingElevator.gameObject.SetActive(true);
 		}
-		if (INPUT.K.InstantDown(KeyCode.I)) GameEvents.RaiseCamViewPunch(new Vector3(3f, 0.5f, 0.4f), duration: 0.25f);
+		if (INPUT.K.InstantDown(KeyCode.I)) GameEvents.RaiseCamViewPunch(new Vector3(3.5f, 0.7f, 0.5f), duration: 0.25f);
 		//
 		if (INPUT.K.InstantDown(KeyCode.P)) GameEvents.RaiseGamePaused();
 		if (INPUT.K.InstantDown(KeyCode.U)) GameEvents.RaiseGameUnPaused();
