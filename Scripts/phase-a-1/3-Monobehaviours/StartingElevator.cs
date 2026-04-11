@@ -37,12 +37,6 @@ public class StartingElevator : MonoBehaviour
 		this._elevatorPlatform.position = this._elevatorPlatform.position.xz() + Vector3.up * this._startingHeight;
 		isLowering = true;
 	} 
-	Vector3 afterShake(Vector3 xzStart, float shakeAmount)
-	{
-		Vector3 pos = xzStart;
-		
-		return pos;
-	}
 	#endregion
 
 	#region Unity Life Cycle
@@ -75,7 +69,7 @@ public class StartingElevator : MonoBehaviour
 		#region shake
 		float shake = Z.lerp(0.02f, 0.04f, t);
 		pos.x = xzStartPos.x + (Mathf.PerlinNoise(Time.time * 20f, 0f) - 0.5f) * shake;
-		pos.z = xzStartPos.y + (Mathf.PerlinNoise(0f, Time.time * 20f) - 0.5f) * shake; 
+		pos.z = xzStartPos.z + (Mathf.PerlinNoise(0f, Time.time * 20f) - 0.5f) * shake; 
 		#endregion
 
 		this._elevatorPlatform.position = pos;
@@ -85,6 +79,7 @@ public class StartingElevator : MonoBehaviour
 			this._landingParticlesObj.SetActive(true);
 			// purpose: other system react to this landing (sound, tutorial, effects etc....)
 			GameEvents.RaiseElevatorLanded();
+			GameEvents.RaiseCamViewPunch(new Vector3(3f, 0.5f, 0.4f), duration: 0.25f);
 		}
 	}
 	private void OnDisable()

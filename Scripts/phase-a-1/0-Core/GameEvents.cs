@@ -57,4 +57,14 @@ public static partial class GameEvents
 			.Invoke();
 	}
 	// << when game un-paused
+
+	// when camera view punch >>
+	public static event Action<Vector3, float> OnCamViewPunch;
+	public static void RaiseCamViewPunch(Vector3 punchAmount, float duration)
+	{
+		LogSubscribersCount(nameof(OnCamViewPunch), OnCamViewPunch);
+		GameEvents.OnCamViewPunch? // if there is any subscribers
+			.Invoke(punchAmount, duration);
+	}
+	// << when camera view punch
 }
