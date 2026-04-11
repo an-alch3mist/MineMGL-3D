@@ -966,7 +966,6 @@ GameObject:
   - component: {fileID: 420548378}
   - component: {fileID: 420548380}
   - component: {fileID: 420548379}
-  - component: {fileID: 420548381}
   m_Layer: 5
   m_Name: money (TMP)
   m_TagString: Untagged
@@ -986,7 +985,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 541484601}
+  m_Father: {fileID: 1870119064}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -1093,19 +1092,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 420548377}
   m_CullTransparentMesh: 1
---- !u!114 &420548381
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 420548377}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baeb42a0a0876544a90db16bb09891ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::moneyOrchestrator
-  _moneyText: {fileID: 420548379}
 --- !u!1 &446653836
 GameObject:
   m_ObjectHideFlags: 0
@@ -1475,7 +1461,7 @@ RectTransform:
   - {fileID: 834011210}
   - {fileID: 1997720964}
   - {fileID: 936116675}
-  - {fileID: 420548378}
+  - {fileID: 1870119064}
   - {fileID: 593610294}
   - {fileID: 1775161232}
   m_Father: {fileID: 0}
@@ -2427,6 +2413,7 @@ GameObject:
   - component: {fileID: 936116675}
   - component: {fileID: 936116677}
   - component: {fileID: 936116676}
+  - component: {fileID: 936116678}
   m_Layer: 5
   m_Name: bgUI (Panel)
   m_TagString: Untagged
@@ -2466,7 +2453,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.9019608}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.69803923}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2491,6 +2478,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 936116674}
   m_CullTransparentMesh: 1
+--- !u!114 &936116678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936116674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9cfd72924a58ce42a455b388a78f3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::bgUI
 --- !u!1 &937314596
 GameObject:
   m_ObjectHideFlags: 0
@@ -4068,6 +4067,96 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &1870119063
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1870119064}
+  - component: {fileID: 1870119066}
+  - component: {fileID: 1870119065}
+  - component: {fileID: 1870119067}
+  m_Layer: 5
+  m_Name: money (Panel)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1870119064
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1870119063}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 420548378}
+  m_Father: {fileID: 541484601}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 335}
+  m_SizeDelta: {x: -1080, y: -670}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1870119065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1870119063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 4c7ae82cb6b7eb2409a6da11f15e8296, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1870119066
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1870119063}
+  m_CullTransparentMesh: 1
+--- !u!114 &1870119067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1870119063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baeb42a0a0876544a90db16bb09891ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::moneyOrchestrator
+  _moneyText: {fileID: 420548379}
 --- !u!1 &1997720963
 GameObject:
   m_ObjectHideFlags: 0

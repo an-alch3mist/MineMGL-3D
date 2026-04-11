@@ -23,8 +23,8 @@ public class moneyUI : MonoBehaviour
 		if(isFirstEnable == true)
 		{
 			// do somthng
-			isFirstEnable = false;
 			GameEvents.OnMoneyChanged += HandleMoneyChanged;
+			isFirstEnable = false;
 		}
 	}
 	/*
