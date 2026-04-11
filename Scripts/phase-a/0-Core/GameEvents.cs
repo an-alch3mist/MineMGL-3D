@@ -10,7 +10,7 @@ using TMPro;
 
 using SPACE_UTIL;
 
-public static class GameEvents
+public static partial class GameEvents
 {
 	// when Somthng occured >>
 	public static event Action<int> OnSomthng;
