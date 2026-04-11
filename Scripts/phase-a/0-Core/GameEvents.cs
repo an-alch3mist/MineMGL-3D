@@ -62,12 +62,12 @@ public static class GameEvents
 	// <<  when shop view is toggled
 
 	// when interaction view is toggled >>
-	public static event Action<GameObject> OnOpenInteractionView;
-	public static void RaiseOpenInteractionView(GameObject obj)
+	public static event Action<IInteractable> OnOpenInteractionView;
+	public static void RaiseOpenInteractionView(IInteractable interactable)
 	{
 		LogSubscribersCount(nameof(OnOpenInteractionView), OnOpenInteractionView);
 		GameEvents.OnOpenInteractionView? // if there is any subscribers
-			.Invoke(obj);
+			.Invoke(interactable);
 	}
 	// <<  when shop view is toggled
 	// when shop view is toggled >>
@@ -90,9 +90,11 @@ public static class GameEvents
 	}
 	// << when anyCategory is unlocked
 
+	#region LogSubscribersCount
 	static void LogSubscribersCount(string name, Delegate anEvent)
 	{
 		int subsCount = anEvent?.GetInvocationList().Length ?? 0;
 		UnityEngine.Debug.Log($"[GamEvents] {name} raised for -> {subsCount} subscribers".colorTag("lime"));
-	}
+	} 
+	#endregion
 }

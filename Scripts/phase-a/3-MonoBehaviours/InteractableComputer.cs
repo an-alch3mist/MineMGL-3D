@@ -7,6 +7,7 @@ using SPACE_UTIL;
 public class InteractableComputer : MonoBehaviour, IInteractable
 {
 	[SerializeField] List<SO_InteractionOption> _OPTION;
+	[SerializeField] bool _selectFirstOptionDefault = true;
 
 	public string GetObjectName()
 	{
@@ -14,17 +15,19 @@ public class InteractableComputer : MonoBehaviour, IInteractable
 	}
 	public bool ShouldUseInteractionWheel()
 	{
-		return true;
+		return this._selectFirstOptionDefault == false;
 	}
-	public List<SO_InteractionOption> GetInteractions()
+	public List<SO_InteractionOption> GetOptions()
 	{
 		return this._OPTION;
 	}
 	public void Interact(SO_InteractionOption selectedInteraction)
 	{
-		// TODO, check type of interation made through enum (possibly).
-		GameEvents.RaiseCloseInteractionView();
-		GameEvents.RaiseOpenShopView();
-		// TODO use UIManager to monitor and close UI menus on priority or close all, using GameEvents or Singleton<>.
+		// Debug.Log($"should perform {selectedInteraction.interactionName}".colorTag("lime"));
+		if(selectedInteraction.interactionName == "openShopView")
+		{
+			Singleton<UIManager>.Ins.CloseAllSubManager();
+			GameEvents.RaiseOpenShopView();
+		}
 	}
 }

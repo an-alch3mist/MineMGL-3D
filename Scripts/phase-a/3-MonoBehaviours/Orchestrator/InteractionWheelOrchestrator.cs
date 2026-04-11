@@ -44,7 +44,7 @@ public class InteractionWheelOrchestrator : MonoBehaviour
 	public void Init(GameObject obj)
 	{
 		ErazeAndBuildOptionsView(
-			OPTION: obj.GetComponent<IInteractable>().GetInteractions(), 
+			OPTION: obj.GetComponent<IInteractable>().GetOptions(), 
 			interactable: obj.GetComponent<IInteractable>()
 		);
 	}

@@ -8,7 +8,7 @@ using SPACE_UTIL;
 /// toggle UI + events on enable/disable handled here, reamining dynamic button or inputField events inside orchestrator
 /// reads data from DataService
 /// </summary>
-public class moneyUI : Singleton<moneyUI>
+public class moneyUI : MonoBehaviour
 {
 	[SerializeField] TextMeshProUGUI _moneyText;
 

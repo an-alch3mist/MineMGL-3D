@@ -12,11 +12,8 @@ using SPACE_UTIL;
 /// <summary>
 /// toggle interaction wheel ui panel.
 /// </summary>
-[DefaultExecutionOrder(1)] // occurs before its orchestrator 
 public class InteractionWheelUI : Singleton<InteractionWheelUI>
 {
-	List<SO_InteractionOption> INTERACTION;
-	[SerializeField] InteractionWheelOrchestrator _orchestrator;
 	#region Unity Life 
 	bool isFirstEnable = true;
 	private void OnEnable()
@@ -24,21 +21,23 @@ public class InteractionWheelUI : Singleton<InteractionWheelUI>
 		Debug.Log(C.method(this));
 		if (isFirstEnable)
 		{
-			GameEvents.OnOpenInteractionView += (obj) =>
+			// selfActive Subscribed by Itself At Start >>
+			GameEvents.OnOpenInteractionView += (interactable) =>
 			{
 				this.gameObject.SetActive(true);
-				this._orchestrator.Init(obj);
+				ErazeAndBuildOptionsView(interactable.GetOptions(), interactable);
 			};
 			GameEvents.OnCloseInteractionView += () => this.gameObject.SetActive(false);
-			//
+			// << selfActive/Inactive Subscribed by Itself At Start
 			this.gameObject.SetActive(false); // deactivate once setup complete
 			isFirstEnable = false;
+			return;
 		}
 		GameEvents.RaiseMenuStateChanged(isAnyMenuOpen: true); // for cursorLock purpose
 	}
 	private void Update()
 	{
-		if (INPUT.K.InstantDown(KeyCode.Escape))
+		if (INPUT.K.InstantDown(KeyCode.Escape) || INPUT.K.InstantDown(KeyCode.E))
 		{
 			Debug.Log("toggle interactionWheelUI false");
 			// .toggle is in namespace SPACE_UTIL as extension behaves same as .SetActive();
@@ -50,5 +49,34 @@ public class InteractionWheelUI : Singleton<InteractionWheelUI>
 		Debug.Log(C.method(this, "orange"));
 		GameEvents.RaiseMenuStateChanged(isAnyMenuOpen: false);  // for cursorLock purpose
 	}
+	#endregion
+
+	#region Orchestrator(Since its just one tab)
+	#region inspector fields
+	[Header("orchestrator")]
+	[SerializeField] Transform _container;
+	[SerializeField] GameObject _pfInteractionOption;
+	#endregion
+	#region private API
+	void ErazeAndBuildOptionsView(List<SO_InteractionOption> OPTION, IInteractable interactable)
+	{
+		if(interactable.ShouldUseInteractionWheel() == false)
+		{
+			interactable.Interact(OPTION[0]);
+			return;
+		}
+		this._container.destroyLeaves();
+		foreach (var option in OPTION)
+		{
+			var field = GameObject.Instantiate(this._pfInteractionOption, this._container)
+									.gc<Field_InteractionOption>();
+			field.SetData(option.interactionName, option.sprite);
+			field._button.onClick.AddListener(() =>
+			{
+				interactable.Interact(option);
+			});
+		}
+	}
+	#endregion
 	#endregion
 }

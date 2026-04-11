@@ -14,7 +14,6 @@ using SPACE_UTIL;
 /// create wires UI listeners, instantiate + destory of prefabs, += when to RefreshAll
 /// reads data from DataService
 /// </summary>
-[DefaultExecutionOrder(2)]
 public class ShopUIOrchestrator : MonoBehaviour
 {
 	#region Inspector Fields
