@@ -161,8 +161,8 @@ public class InventoryDataService
 		return $@"
 {'='.repeat(4) + header + '='.repeat(4)}
 // SLOT
-{PhaseBLOG.LIST_SLOT__TO__JSON(SLOT)}
-// selectedSlotIndex : {selectedSlotIndex}";
+{PhaseBLOG.LIST_SLOT__TO__JSON(SLOT)},
+selectedSlotIndex: {selectedSlotIndex}";
 	}
 	#endregion
 }
