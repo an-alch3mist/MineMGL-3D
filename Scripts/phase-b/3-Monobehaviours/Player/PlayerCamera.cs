@@ -81,8 +81,10 @@ public class PlayerCamera : MonoBehaviour
 	#endregion
 
 	#region Unity Life Cycle
-	/// <summary> Initializes FOV to base value and subscribes to OnCamViewPunch so external
-	/// systems (elevator landing, explosions) can shake the camera. </summary>
+	/// <summary> 
+	/// Initializes FOV to base value and subscribes to OnCamViewPunch so external
+	/// systems (elevator landing, explosions) can shake the camera. 
+	/// </summary>
 	private void Start()
 	{
 		currentFOV = _baseFOV;
@@ -92,8 +94,10 @@ public class PlayerCamera : MonoBehaviour
 		// purpose: apply view punch from elevator landing, explosions, etc.
 		GameEvents.OnCamViewPunch += HandleViewPunch;
 	}
-	/// <summary> Every frame: handles mouse look (when no menu open), FOV sprint widening,
-	/// camera head bob, viewmodel hand sway, and view punch decay from explosions. </summary>
+	/// <summary> 
+	/// Every frame: handles mouse look (when no menu open), FOV sprint widening,
+	/// camera head bob, viewmodel hand sway, and view punch decay from explosions. 
+	/// </summary>
 	private void Update()
 	{
 		if (Time.timeScale == 0f) return;
@@ -117,7 +121,9 @@ public class PlayerCamera : MonoBehaviour
 		xRot = (xRot - my).clamp(-88f, 88f);
 		_pc.transform.Rotate(Vector3.up * mx);
 	}
-	/// <summary> Widens FOV by 5% when sprinting, smoothly returns to base FOV when stopping. </summary>
+	/// <summary> 
+	/// Widens FOV by 5% when sprinting, smoothly returns to base FOV when stopping. 
+	/// </summary>
 	void HandleFOV()
 	{
 		bool sprinting = _pc.SelectedWalkSpeed > _pc.WalkSpeed && _pc.IsGrounded;
