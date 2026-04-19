@@ -98,10 +98,13 @@ public class PlayerCamera : MonoBehaviour
 	{
 		if (Time.timeScale == 0f) return;
 		// → skip look input when any menu is open
-		if (!isAnyMenuOpen) HandleLook();
+		if (!isAnyMenuOpen)
+		{
+			HandleLook();
+			HandleCameraBobbing();
+			HandleViewModelBobbing();
+		}
 		HandleFOV();
-		HandleCameraBobbing();
-		HandleViewModelBobbing();
 		HandleViewPunchDecay();
 	}
 	/// <summary> Reads Mouse X/Y, applies sensitivity, rotates player around Y-axis (horizontal)

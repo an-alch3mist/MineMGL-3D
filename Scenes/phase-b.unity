@@ -13181,18 +13181,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1555537793}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73eccdef3461df944ba576944db86755, type: 3}
+  m_Script: {fileID: 11500000, guid: 11f35dfd1a9138d4bab3bcc07dc93b25, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DEBUG_Check
-  isFirstEnable: 1
-  _LIST: 01000100
-  _LIST_FLOAT:
-  - 0
-  - 100
-  - 200
-  - 1.1
-  - 2.7
-  _CATEGORY: []
+  m_EditorClassIdentifier: Assembly-CSharp::DEBUG_CheckB
 --- !u!1 &1557315075
 GameObject:
   m_ObjectHideFlags: 0
