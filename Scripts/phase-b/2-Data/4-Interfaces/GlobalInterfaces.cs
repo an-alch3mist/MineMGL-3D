@@ -20,9 +20,9 @@ public interface ISaveLoadableObject
 {
 	bool hasBeenSaved { get; set; }
 	bool ShouldBeSaved();
-	SavableObjectTypeId GetSavableObjectTypeId();
+	SavableObjectID GetSavableObjectTypeId();
 	Vector3 GetPos();
 	Vector3 GetRot();
 	void LoadFromSave(string customDataJson);
-	string GetCustomSaveDataJson();
+	string GetCustomDataJsonSnapshot();
 }

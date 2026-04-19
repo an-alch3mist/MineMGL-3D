@@ -11,52 +11,59 @@ using TMPro;
 using SPACE_UTIL;
 
 /// <summary>
-/// walk, sprint, duck, jump, slope sliding - replaces SimplePlayerController
+/// I'm the main player controller — I handle WASD movement, sprinting, ducking, jumping,
+/// slope sliding, gravity, and noclip fly mode (V key). I'm a Singleton so tools and other
+/// systems access my camera, ViewModelContainer, and HoldPosition via Owner chain properties.
+/// I subscribe to OnMenuStateChanged to freeze input when any menu is open. I also own the
+/// mining hat dual-light system (nightVisionLight vs miningHatLight) toggled by ToolMiningHat.
+/// PlayerCamera reads my speed/grounded state for camera bobbing. PlayerGrab reads my camera
+/// for raycasts. InventoryOrchestrator reads isAnyMenuOpen to block hotbar input.
+///
+/// Who uses me: Every tool (via Owner chain), PlayerCamera (bob speed), PlayerGrab (camera ref).
+/// Events I subscribe to: OnMenuStateChanged (freeze/unfreeze input).
 /// </summary>
 public class PlayerController : Singleton<PlayerController>
 {
 	#region Inspector Fields
-	[Header("Move")]
-	[SerializeField] float _walkSpeed = 3f;
-	[SerializeField] float _sprintSpeed = 6f;
-	[SerializeField] float _duckSpeed = 2f;
-	[SerializeField] float _jumpHeight = 2f;
-	[SerializeField] float _gravity = -10f;
-	[SerializeField] float _slideSpeed = 8f;
-	[SerializeField] float _standingSlopeLimit = 75f;
-	[SerializeField] float _duckHeight = 1f;
-	[SerializeField] float _standingHeight = 2f;
-	[SerializeField] float _duckingSpeed = 10f;
+	 [Header("Move")]
+    [SerializeField] float _walkSpeed = 4f;
+    [SerializeField] float _sprintSpeed = 6f;
+    [SerializeField] float _duckSpeed = 2f;
+    [SerializeField] float _jumpHeight = 2f;
+    [SerializeField] float _gravity = -9.81f;
+    [SerializeField] float _slideSpeed = 8f;
+    [SerializeField] float _standingSlopeLimit = 60f;
+    [SerializeField] float _duckHeight = 1f;
+    [SerializeField] float _standingHeight = 2f;
+    [SerializeField] float _duckingSpeed = 10f;
+    [SerializeField] CharacterController _cc;
+    [SerializeField] Transform _groundCheck;
+    [SerializeField] LayerMask _groundLayer;
+    // [SerializeField] Transform _characterModel;
 
-	[SerializeField] CharacterController _cc;
-	// [SerializeField] Transform _groundCheck;
-	[SerializeField] LayerMask _groundLayer;
-	// [SerializeField] Transform _characterModel;
-
-	[Header("References (Owner chain) For Tools")]
-	[SerializeField] Camera _playerCam;
-	[SerializeField] Transform _viewModelContainer;
-	[SerializeField] Transform _holdPosition;
-	[SerializeField] Transform _magnetToolPosition;
-	[SerializeField] LayerMask _interactLayerMask;
-	[Header("Mining Hat Lights (nice to have)")]
-	[SerializeField] GameObject _nightVisionLight;
-	[SerializeField] GameObject _miningHatLight;
+    [Header("References (Owner chain)")]
+    [SerializeField] Camera _playerCam;
+    [SerializeField] Transform _viewModelContainer;
+    [SerializeField] Transform _holdPosition;
+    [SerializeField] Transform _magnetToolPosition;
+    [SerializeField] LayerMask _interactLayerMask;
+    [Header("Mining Hat Lights")]
+    [SerializeField] GameObject _nightVisionLight;
+    [SerializeField] GameObject _miningHatLight;
 	#endregion
 
 	#region private API fields
 	bool isAnyMenuOpen;
-	Vector2 moveInput;
 	Vector3 velocity;
 	float xRot;
 	float yRot;
-
 	bool isGrounded;
 	bool isDucking;
 	bool isUsingNoclip;
-	bool isminingLampEnabled;
+	bool miningLightEnabled;
 	float cameraHeightVelocity;
 	float selectedWalkSpeed;
+	Vector2 moveInput;
 	#endregion
 
 	#region Unity Life Cycle
@@ -89,10 +96,13 @@ public class PlayerController : Singleton<PlayerController>
 				HandleDucking();
 			}
 		}
-		if (!isUsingNoclip) HandleGravityAndSlope();
+		if (!isUsingNoclip)
+			HandleGravityAndSlope();
 		if (transform.position.y <= -200f)
-			Teleport(PlayerSpawnPoint.GetRandomSpawnPoint());
+			TeleportPlayer(PlayerSpawnPoint.GetRandomSpawnPoint());
 	}
+	/// <summary> Reads WASD input, applies sprint/duck speed modifiers, moves the CharacterController,
+	/// and handles jumping (Space key adds upward velocity when grounded). </summary>
 	void HandleMovement()
 	{
 		moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -108,9 +118,11 @@ public class PlayerController : Singleton<PlayerController>
 			velocity.x = 0f; velocity.z = 0f;
 		}
 	}
+	/// <summary> C key ducks (shrinks CC height), releasing C stands up (blocked if ceiling above).
+	/// Smoothly interpolates camera height and scales the character model to match. </summary>
 	void HandleDucking()
 	{
-		bool wantsDuck = Input.GetKey(KeyCode.LeftControl);
+		bool wantsDuck = Input.GetKey(KeyCode.C);
 		bool canStand = true;
 		if (!wantsDuck && isDucking)
 		{
@@ -130,8 +142,10 @@ public class PlayerController : Singleton<PlayerController>
 		/*
 		if (_characterModel != null)
 			_characterModel.localScale = new Vector3(1f, _cc.height / _standingHeight, 1f);
-		*/
+	*/
 	}
+	/// <summary> Applies gravity when airborne, detects steep slopes via raycasts and adds slide
+	/// velocity to push the player downhill, caps head-bump velocity to zero. </summary>
 	void HandleGravityAndSlope()
 	{
 		if (isGrounded)
@@ -164,13 +178,18 @@ public class PlayerController : Singleton<PlayerController>
 		CollisionFlags flags = _cc.Move(velocity * Time.deltaTime);
 		if ((flags & CollisionFlags.Above) != 0 && velocity.y > 0f) velocity.y = 0f;
 	}
-	#region extra: ToggleNoclip(), HandleNoclipMovement(), ToggleMiningLightFromTool
+
+	#region extra
 	// nice-to-have: noclip — V key fly mode, no gravity, through walls
+	/// <summary> Flips noclip on/off — disables CharacterController so the player can fly through
+	/// walls. Re-enabling CC snaps the player back to valid ground. </summary>
 	void ToggleNoclip()
 	{
 		isUsingNoclip = !isUsingNoclip;
 		_cc.enabled = !isUsingNoclip;
 	}
+	/// <summary> Flies the player in the camera's forward direction using WASD, Space/C for up/down,
+	/// Shift for fast fly. No gravity, no collisions — pure free movement for debugging. </summary>
 	void HandleNoclipMovement()
 	{
 		Vector3 forward = _playerCam.transform.forward;
@@ -187,86 +206,44 @@ public class PlayerController : Singleton<PlayerController>
 	// nice-to-have: mining hat dual-light — toggles between nightVisionLight and miningHatLight on player
 	public void ToggleMiningLightFromTool(bool enable)
 	{
-		isminingLampEnabled = enable;
-		if (_nightVisionLight != null) _nightVisionLight.SetActive(!isminingLampEnabled);
-		if (_miningHatLight != null) _miningHatLight.SetActive(isminingLampEnabled);
+		miningLightEnabled = enable;
+		if (_nightVisionLight != null) _nightVisionLight.SetActive(!miningLightEnabled);
+		if (_miningHatLight != null) _miningHatLight.SetActive(miningLightEnabled);
 	}
 	#endregion
 	#endregion
 
 	#region public API fields
-	public Camera GetPlayerCam()
-	{
-		return this._playerCam;
-	}
-	public Transform GetViewModelContainer()
-	{
-		return this._viewModelContainer;
-	}
-	public Transform GetHoldPos()
-	{
-		return this._holdPosition;
-	}
-	public Transform GetMagnetToolPos()
-	{
-		return this._magnetToolPosition;
-	}
-	public CharacterController GetCC()
-	{
-		return this._cc;
-	}
-	public LayerMask GetInteractionMask()
-	{
-		return this._interactLayerMask;
-
-	}
-	public float GetMoveSpeed()
-	{
-		return selectedWalkSpeed;
-	}
-	public float GetWalkSpeed()
-	{
-		return this._walkSpeed;
-	}
-	public float GetSprintSpeed()
-	{
-		return this._sprintSpeed;
-	}
-	public float GetDuckSpeed()
-	{
-		return this._duckSpeed;
-	}
-	public Vector2 GetMoveInput()
-	{
-		return moveInput;
-	}
-	public bool GetIsGrounded()
-	{
-		return isGrounded;
-	}
+	public Camera PlayerCam => _playerCam;
+	public Transform ViewModelContainer => _viewModelContainer;
+	public Transform HoldPosition => _holdPosition;
+	public Transform MagnetToolPosition => _magnetToolPosition;
+	public CharacterController CC => _cc;
+	public LayerMask InteractLayerMask => _interactLayerMask;
+	public float SelectedWalkSpeed => selectedWalkSpeed;
+	public float WalkSpeed => _walkSpeed;
+	public float SprintSpeed => _sprintSpeed;
+	public float DuckSpeed => _duckSpeed;
+	public Vector2 MoveInput => moveInput;
+	public bool IsGrounded => isGrounded;
 	public bool IsInWater { get; set; }
 	#endregion
 
 	#region public API
-	/// <summary>
-	/// teleport player to pos(by disable-enable character COntroller)
-	/// </summary>
-	/// <param name="pos"></param>
-	public void Teleport(Vector3 pos)
-	{
-		IsInWater = false;
-		bool wasEnabled = _cc.enabled;
-		_cc.enabled = false;
-		transform.position = pos;
-		_cc.enabled = wasEnabled;
-	}
-	/// <summary> 
-	/// teleport player to position + rotation 
-	/// </summary>
-	public void TeleportWithRotation(Vector3 position, Vector3 rotation)
-	{
-		Teleport(position);
-		transform.rotation = Quaternion.Euler(rotation);
-	}
+	/// <summary> teleport player to position </summary>
+    public void TeleportPlayer(Vector3 position)
+    {
+        IsInWater = false;
+        bool wasEnabled = _cc.enabled;
+        _cc.enabled = false;
+        transform.position = position;
+        _cc.enabled = wasEnabled;
+    }
+    /// <summary> teleport player to position + rotation </summary>
+    public void TeleportPlayer(Vector3 position, Vector3 rotation)
+    {
+        TeleportPlayer(position);
+        transform.rotation = Quaternion.Euler(rotation);
+    }
 	#endregion
 }

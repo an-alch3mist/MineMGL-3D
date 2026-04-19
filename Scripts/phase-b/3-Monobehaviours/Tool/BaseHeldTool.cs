@@ -6,6 +6,8 @@ using SPACE_UTIL;
 
 public class BaseHeldTool : MonoBehaviour, IInteractable, ISaveLoadableObject
 {
+	public PlayerController owner;
+
 	public string GetObjectName()
 	{
 		throw new System.NotImplementedException();
@@ -24,7 +26,7 @@ public class BaseHeldTool : MonoBehaviour, IInteractable, ISaveLoadableObject
 	}
 
 	public bool hasBeenSaved { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-	public string GetCustomSaveDataJson()
+	public string GetCustomDataJsonSnapshot()
 	{
 		throw new System.NotImplementedException();
 	}
@@ -36,7 +38,7 @@ public class BaseHeldTool : MonoBehaviour, IInteractable, ISaveLoadableObject
 	{
 		throw new System.NotImplementedException();
 	}
-	public SavableObjectTypeId GetSavableObjectTypeId()
+	public SavableObjectID GetSavableObjectTypeId()
 	{
 		throw new System.NotImplementedException();
 	}

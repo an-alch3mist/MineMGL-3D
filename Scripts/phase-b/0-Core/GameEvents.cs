@@ -10,6 +10,9 @@ using TMPro;
 
 using SPACE_UTIL;
 
+/// <summary>
+/// partial extend for phase-b — no modification to phase-a GameEvents
+/// </summary>
 public static partial class GameEvents
 {
 	/*
@@ -23,4 +26,14 @@ public static partial class GameEvents
 	}
 	// << when Somthng occured
 	*/
+
+	// when tool was equipped (activated in hotbar) >>
+	public static event Action<BaseHeldTool> OnToolEquipped;
+	public static void RaiseToolEquipped(BaseHeldTool tool)
+	{
+		LogSubscribersCount(nameof(OnToolEquipped), OnToolEquipped);
+		GameEvents.OnToolEquipped? // if there is any subscribers
+			.Invoke(tool);
+	}
+	// << when tool was equipped
 }

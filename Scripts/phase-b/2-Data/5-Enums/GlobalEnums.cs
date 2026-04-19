@@ -1,29 +1,41 @@
-/* Global Enums */
+// GLOBAL ENUM (@PhaseB) >> //
 
 /// <summary>
-/// magnet tool grab filter.
+/// all enums introduced in Phase B — one file, one place
 /// </summary>
+
+/// <summary> interaction option types — replaces magic strings </summary>
+public enum InteractionType
+{
+	Take,
+	Destroy,
+	Toggle,
+	// Pack, // Phase D:
+	// TakeBuilding,
+	// SetMold, // Phase E:
+	// ToggleDirection,
+}
+
+/// <summary> magnet tool grab filter modes </summary>
 public enum MagnetToolSelectionMode
 {
-	everything = 0,
-	resourcesNotInFilter = 1,
-	resourcesNotOnConveyors = 2,
+	Everything = 0,
+	ResourcesNotInFilter = 1,
+	ResourcesNotOnConveyors = 2
 }
 
-/// <summary>
-/// stub - till phase-G
-/// </summary>
-public enum SavableObjectTypeId
+/// <summary> stub — expanded in Phase G with all savable object IDs </summary>
+public enum SavableObjectID
 {
-	invalid = 0,
-	toolBuilder = 401,
-	hammerBasic = 402,
-	lantern = 403,
-	magnetTool = 404,
-	pickAxeBasic = 405,
-	resourceScannerTool = 406,
-	wrenchTool = 410,
-	miningHelm = 417,
+	INVALID = 0,
+	ToolBuilder = 401,
+	HammerBasic = 402,
+	Lantern = 403,
+	MagnetTool = 404,
+	PickaxeBasic = 405,
+	ResourceScannerTool = 406,
+	WrenchTool = 410,
+	MiningHelmet = 417,
 }
 
-/* Global Enums */
+// << GLOBAL ENUM (@PhaseB) //
