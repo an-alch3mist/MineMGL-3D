@@ -13,33 +13,30 @@ using SPACE_UTIL;
 /// <summary>
 /// owns money
 /// </summary>
-[DefaultExecutionOrder(-100)] // just after INITManager
+[DefaultExecutionOrder(-100)] // after INITMAnager, if any of monoBehaviour[in curr game]
 public class EconomyManager : Singleton<EconomyManager>
 {
 	[SerializeField] float _defaultMoney = 400f;
-
-	#region private API
-	float money = 0f;
-	#endregion
-
+	float currMoney;
 	#region public API
-	public float GetMoney() => money;
+	public float GetMoney() => this._defaultMoney;
 	public void AddMoney(float deltaMoney)
 	{
-		money += deltaMoney; GameEvents.RaiseMoneyChanged(money);
+		currMoney += deltaMoney;
+		GameEvents.RaiseMoneyChanged(currMoney);
 	}
 	public bool CanAfford(float price)
 	{
-		return price <= money;
+		return price <= currMoney;
 	}
 	#endregion
 
 	#region Unity Life Cycle
 	protected override void Awake()
 	{
-		Debug.Log(C.method(this));
 		base.Awake();
-		money = this._defaultMoney;
-	}
+		Debug.Log(C.method(this));
+		currMoney = this._defaultMoney;
+	} 
 	#endregion
 }

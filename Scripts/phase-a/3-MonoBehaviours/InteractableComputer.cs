@@ -26,7 +26,6 @@ public class InteractableComputer : MonoBehaviour, IInteractable
 		// Debug.Log($"should perform {selectedInteraction.interactionName}".colorTag("lime"));
 		if(selectedInteraction.interactionName == "openShopView")
 		{
-			Singleton<UIManager>.Ins.CloseAllSubManager();
 			GameEvents.RaiseOpenShopView();
 		}
 	}

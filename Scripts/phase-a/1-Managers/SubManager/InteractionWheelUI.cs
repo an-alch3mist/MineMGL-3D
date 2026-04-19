@@ -24,6 +24,7 @@ public class InteractionWheelUI : Singleton<InteractionWheelUI>
 			// selfActive Subscribed by Itself At Start >>
 			GameEvents.OnOpenInteractionView += (interactable) =>
 			{
+				Singleton<UIManager>.Ins.CloseAllSubManager();
 				this.gameObject.SetActive(true);
 				ErazeAndBuildOptionsView(interactable.GetOptions(), interactable);
 			};
@@ -35,14 +36,19 @@ public class InteractionWheelUI : Singleton<InteractionWheelUI>
 		}
 		GameEvents.RaiseMenuStateChanged(isAnyMenuOpen: true); // for cursorLock purpose
 	}
+	// not required for now
 	private void Update()
 	{
+		/*
+		// close is handled by UIManager 
+		// close
 		if (INPUT.K.InstantDown(KeyCode.Escape) || INPUT.K.InstantDown(KeyCode.E))
 		{
 			Debug.Log("toggle interactionWheelUI false");
 			// .toggle is in namespace SPACE_UTIL as extension behaves same as .SetActive();
 			this.gameObject.toggle(value: false);
 		}
+		*/
 	}
 	private void OnDisable()
 	{

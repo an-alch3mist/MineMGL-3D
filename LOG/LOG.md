@@ -327,3 +327,30 @@
 selectedSlotIndex: 0
 ```
 
+```json
+
+====inventory dataService snapshot====
+// SLOT
+[],
+selectedSlotIndex: 0
+```
+
+```json
+{
+  "10": "somthng",
+  "100": "default"
+}
+```
+
+# MAP >>
+
+
+```json
+{
+  "10": "somthng",
+  "100": "default"
+}
+```
+
+# << MAP
+

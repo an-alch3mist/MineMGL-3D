@@ -25,7 +25,7 @@ public class SimplePlayerInteraction : MonoBehaviour
 
 	void TryInteract()
 	{
-		if (Singleton<UIManager>.Ins.isAnyMenuOpen)
+		if (Singleton<UIManager>.Ins.GetIsAnyMenuOpen())
 			return;
 
 		Ray ray = new Ray(this._cam.transform.position, this._cam.transform.forward);

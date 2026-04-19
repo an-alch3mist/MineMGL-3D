@@ -36,8 +36,8 @@ public class DEBUG_Check : MonoBehaviour
 		{
 			if (INPUT.K.HeldDown(KeyCode.LeftAlt) && INPUT.M.InstantDown(0))
 			{
-				// checkExtensionIEnumerable();
-				checkShopDataService();
+				// checkShopDataService();
+				checkExtensionIEnumerable();
 			}
 			yield return null;
 		}
@@ -50,11 +50,27 @@ public class DEBUG_Check : MonoBehaviour
 	{
 		true, false, true, false
 	};
+	[SerializeField] List<float> _LIST_FLOAT = new List<float>()
+	{
+		0, 100, 200, 1.1f, 2.7f,
+	};
 	void checkExtensionIEnumerable()
 	{
 		Debug.Log(C.method(this));
 		Debug.Log($".all: {this._LIST.all(elem => elem)}".colorTag("lime"));
 		Debug.Log($".any: {this._LIST.any(elem => elem)}".colorTag("green"));
+
+		Debug.Log($".sum: {this._LIST_FLOAT.sum(elem => elem)}".colorTag("lime"));
+		Debug.Log($".int: {this._LIST_FLOAT.sum(elem => elem.round())}".colorTag("green"));
+
+		Dictionary<int, string> MAP = new Dictionary<int, string>();
+		MAP[10] = "somthng";
+		MAP.GetOrCreate(100, defaultValue: "default");
+
+		var snapshot = MAP.ToNSJson(pretify: true);
+		LOG.H("MAP");
+		LOG.AddLog(snapshot, "json");
+		LOG.HEnd("MAP");
 	}
 
 	[Header("checkShopDataService")]
@@ -83,4 +99,5 @@ public class DEBUG_Check : MonoBehaviour
 		dataService.TryAddNewCartItem(dataService.GetCartItems()[0].wShopItem);
 		LOG.AddLog(dataService.GetSnapShotForTest(), "json");
 	}
+
 }

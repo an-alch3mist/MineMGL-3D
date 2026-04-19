@@ -233,11 +233,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 23727004}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f5677bfd4f561e40b10af5507281105, type: 3}
+  m_Script: {fileID: 11500000, guid: 2844d8840c0781a47a42f5c35878e44e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  shopUI: {fileID: 0}
-  interactionUI: {fileID: 0}
 --- !u!43 &46155913
 Mesh:
   m_ObjectHideFlags: 0
@@ -6901,8 +6899,6 @@ GameObject:
   - component: {fileID: 446653840}
   - component: {fileID: 446653841}
   - component: {fileID: 446653842}
-  - component: {fileID: 446653843}
-  - component: {fileID: 446653844}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -7000,83 +6996,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 446653836}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0ebab5802c7d1743b3a46ebbb37cacd, type: 3}
+  m_Script: {fileID: 11500000, guid: a321914336ba8f44682a36a37bf56418, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  _walkSpeed: 3
-  _sprintSpeed: 6
-  _duckSpeed: 2
-  _jumpHeight: 2
-  _gravity: -10
-  _slideSpeed: 8
-  _standingSlopeLimit: 75
-  _duckHeight: 1
-  _standingHeight: 2
-  _duckingSpeed: 10
+  m_EditorClassIdentifier: Assembly-CSharp::SimplePlayerController
+  _walkSpeed: 4
   _cc: {fileID: 446653838}
-  _groundLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  _playerCam: {fileID: 330585545}
-  _viewModelContainer: {fileID: 132816540}
-  _holdPosition: {fileID: 1772451171}
-  _magnetToolPosition: {fileID: 371037628}
-  _interactLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  _nightVisionLight: {fileID: 967394927}
-  _miningHatLight: {fileID: 236428932}
---- !u!114 &446653843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446653836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3afe378d0ff48204d9dea025b37c10af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerCamera
   _mouseSensitivity: 2
-  _cam: {fileID: 330585545}
-  _baseFOV: 70
-  _baseBobbingSpeed: 14
-  _baseBobbingAmount: 0.05
-  _baseBobbingPitchAmount: 1
-  _baseBobbingYawAmount: 1
-  _viewModelContainer: {fileID: 132816540}
-  _viewModelBobSpeed: 8
-  _viewModelBobAmount: 0.05
-  _viewModelBobPitchAmount: 1.5
-  _viewModelBobYawAmount: 1.5
-  _viewModelLookSwayAmount: 0.05
-  _viewModelLookSwayMax: 2
-  _viewModelBasePos: {x: 0, y: 0, z: 0}
-  _viewModelBaseRotEuler: {x: 0, y: 0, z: 0}
-  _jumpBounceAmount: -0.12
-  _landBounceAmount: 0.08
-  _jumpSmoothTime: 0.2
---- !u!114 &446653844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446653836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7e07b3f58fe33044822e9655a10a0e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerGrab
-  _cam: {fileID: 330585545}
-  _holdPos: {fileID: 1772451171}
-  _dragger: {fileID: 511577881}
-  _lrRope: {fileID: 1135489455}
-  _interactionRange: 2
-  _interactionLayerMask:
-    serializedVersion: 2
-    m_Bits: 1024
+  _playerCam: {fileID: 330585545}
 --- !u!1 &453639643
 GameObject:
   m_ObjectHideFlags: 0
@@ -7796,7 +7722,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ad18015004f3ce418b208afb4386d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RbDraggerController
-  _playerGrab: {fileID: 446653844}
+  _playerGrab: {fileID: 0}
 --- !u!1 &515940803
 GameObject:
   m_ObjectHideFlags: 0
@@ -12104,7 +12030,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1058128264}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df9276bbc6ff0d5409f2d9fa0caa5a8d, type: 3}
+  m_Script: {fileID: 11500000, guid: 917c5f24740d8054baa52fcddf2a52ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EconomyManager
   _defaultMoney: 400
@@ -13005,9 +12931,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1555537793}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11f35dfd1a9138d4bab3bcc07dc93b25, type: 3}
+  m_Script: {fileID: 11500000, guid: 73eccdef3461df944ba576944db86755, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DEBUG_CheckB
+  m_EditorClassIdentifier: Assembly-CSharp::DEBUG_Check
+  isFirstEnable: 1
+  _LIST: 01000100
+  _LIST_FLOAT:
+  - 0
+  - 100
+  - 200
+  - 1.1
+  - 2.7
+  _CATEGORY: []
 --- !u!1 &1557315075
 GameObject:
   m_ObjectHideFlags: 0
@@ -16154,7 +16089,7 @@ MonoBehaviour:
   _OPTION:
   - {fileID: 11400000, guid: 413ee400d58bf1f47b1ecbc7c2b78a55, type: 2}
   - {fileID: 11400000, guid: e54647b1913671e40acd9ff3ef8c0614, type: 2}
-  _selectFirstOptionDefault: 1
+  _selectFirstOptionDefault: 0
 --- !u!1 &1772451170
 GameObject:
   m_ObjectHideFlags: 0
@@ -16757,6 +16692,6 @@ SceneRoots:
   - {fileID: 1391903024}
   - {fileID: 937314597}
   - {fileID: 446653837}
-  - {fileID: 1555537794}
   - {fileID: 193142229}
   - {fileID: 1324619279}
+  - {fileID: 1555537794}

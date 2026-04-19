@@ -32,16 +32,6 @@ public static partial class GameEvents
 	}
 	// << when money changed
 
-	// when a certain menu state changed to enabled/disabled >>
-	public static event Action<bool> OnMenuStateChanged;
-	public static void RaiseMenuStateChanged(bool isAnyMenuOpen)
-	{
-		LogSubscribersCount(nameof(OnMenuStateChanged), OnMenuStateChanged);
-		GameEvents.OnMenuStateChanged? // if there is any subscribers
-			.Invoke(isAnyMenuOpen);
-	}
-	// << when a certain menu state changed to enabled/disabled
-
 	// when shop view is toggled >>
 	public static event Action OnOpenShopView;
 	public static void RaiseOpenShopView()
@@ -89,12 +79,4 @@ public static partial class GameEvents
 			.Invoke(category);
 	}
 	// << when anyCategory is unlocked
-
-	#region LogSubscribersCount
-	static void LogSubscribersCount(string name, Delegate anEvent)
-	{
-		int subsCount = anEvent?.GetInvocationList().Length ?? 0;
-		UnityEngine.Debug.Log($"[GamEvents] {name} raised for -> {subsCount} subscribers".colorTag("lime"));
-	} 
-	#endregion
 }

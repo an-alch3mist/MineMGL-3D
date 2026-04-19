@@ -59,7 +59,7 @@ public class ShopUI : MonoBehaviour
 			this._orchestrator.InitBuildOrchestrateAndSubscribe(shopDataService, this._CATEGORY); // link the shopDataService and the LIST<category> into orchestor
 			// ------------------------------------------------------------------------------------------- //
 			// Self Subscribed to View and disabled after setup, // TODO Unsubscribe on disable() / on destroy()
-			GameEvents.OnOpenShopView += () => this.gameObject.SetActive(true);
+			GameEvents.OnOpenShopView += () => { Singleton<UIManager>.Ins.CloseAllSubManager(); this.gameObject.SetActive(true); };
 			GameEvents.OnCloseShopView += () => this.gameObject.SetActive(false);
 			// 
 			this.gameObject.SetActive(false); // once all setup done, deactivate;
@@ -67,8 +67,10 @@ public class ShopUI : MonoBehaviour
 		}
 		GameEvents.RaiseMenuStateChanged(isAnyMenuOpen: true);
 	}
+	// not required for now
 	private void Update()
 	{
+		/*
 		// 
 		if (INPUT.K.InstantDown(KeyCode.E) || INPUT.K.InstantDown(KeyCode.Escape))
 		{
@@ -76,6 +78,7 @@ public class ShopUI : MonoBehaviour
 			// .toggle is in namespace SPACE_UTIL as extension behaves same as .SetActive();
 			GameEvents.RaiseCloseShopView();
 		}
+		*/
 	}
 	private void OnDisable()
 	{
