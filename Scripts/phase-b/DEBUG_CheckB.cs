@@ -25,6 +25,7 @@ public class DEBUG_CheckB : MonoBehaviour
 		else if(INPUT.K.InstantDown(KeyCode.U))
 		{
 			// try add in real usage.
+			// TODO
 		}
 		else if (INPUT.K.InstantDown(KeyCode.I))
 		{
