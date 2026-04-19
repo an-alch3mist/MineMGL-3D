@@ -85,6 +85,10 @@ public class PlayerGrab : MonoBehaviour
 	/// between dragger and held object, and auto-releases if the held object was deactivated. </summary>
 	private void Update()
 	{
+		// → blocked when any menu panel is open
+		if (isAnyMenuOpen == true)
+			return;
+
 		// → right-click toggles grab/release
 		if (INPUT.K.InstantDown(KeyCode.Mouse1))
 			TryGrabOrReleaseObject();
@@ -109,8 +113,6 @@ public class PlayerGrab : MonoBehaviour
 	void TryGrabOrReleaseObject()
 	{
 		// Debug.Log(C.method(this, "lime"));
-		// → blocked when any menu panel is open
-		if (isAnyMenuOpen) return;
 		// → already holding? release instead
 		// Debug.Log(C.method(this, "lime", adMssg: "no menu open"));
 		if (heldObject != null || grabJoint != null) { ReleaseObject(); return; }
