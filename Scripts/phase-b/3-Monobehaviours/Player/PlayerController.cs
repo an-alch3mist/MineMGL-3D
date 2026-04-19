@@ -26,11 +26,11 @@ public class PlayerController : Singleton<PlayerController>
 {
 	#region Inspector Fields
 	 [Header("Move")]
-    [SerializeField] float _walkSpeed = 4f;
-    [SerializeField] float _sprintSpeed = 6f;
-    [SerializeField] float _duckSpeed = 2f;
+    [SerializeField] float _walkSpeed = 3f;
+    [SerializeField] float _sprintSpeed = 5f;
+    [SerializeField] float _duckSpeed = 1.5f;
     [SerializeField] float _jumpHeight = 2f;
-    [SerializeField] float _gravity = -9.81f;
+    [SerializeField] float _gravity = -10f;
     [SerializeField] float _slideSpeed = 8f;
     [SerializeField] float _standingSlopeLimit = 60f;
     [SerializeField] float _duckHeight = 1f;

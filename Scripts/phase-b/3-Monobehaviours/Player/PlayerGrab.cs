@@ -28,7 +28,7 @@ public class PlayerGrab : MonoBehaviour
 	[SerializeField] Camera _cam;
 	[SerializeField] Transform _holdPos;
 	[SerializeField] GameObject _dragger;
-	[SerializeField] LineRenderer _rope;
+	[SerializeField] LineRenderer _lrRope;
 	[SerializeField] float _interactRange = 2.5f;
 	[SerializeField] LayerMask _grabbableMask;
 	[SerializeField] PlayerController _pc;
@@ -44,9 +44,7 @@ public class PlayerGrab : MonoBehaviour
 
 	#region public API
 	/// <summary> true if currently holding an object </summary>
-	public bool IsHolding => heldObject != null;
-	#endregion
-
+	public bool GetIsHoldingObject() => heldObject != null;
 	#region extra
 	// nice-to-have: RigidbodyDraggerController calls this when SpringJoint breaks — auto-releases orphan grab
 	public void ForceRelease()
@@ -67,8 +65,9 @@ public class PlayerGrab : MonoBehaviour
 			}
 		}
 		heldObject = null;
-		_rope.enabled = false;
+		_lrRope.enabled = false;
 	}
+	#endregion
 	#endregion
 
 	#region Unity Life Cycle
@@ -77,10 +76,10 @@ public class PlayerGrab : MonoBehaviour
 	private void Start()
 	{
 		// purpose: block grab when menu is open
-		GameEvents.OnMenuStateChanged += (open) => isAnyMenuOpen = open;
+		GameEvents.OnMenuStateChanged += (isAnyMenuOpen) => this.isAnyMenuOpen = isAnyMenuOpen;
 		// purpose: set tool.Owner when equipped — decouples InventoryOrchestrator from PlayerMovement
-		GameEvents.OnToolEquipped += (tool) => tool.owner = _pc;
-		_rope.enabled = false;
+		GameEvents.OnToolEquipped += (tool) => tool.SetOwner(this._pc);
+		_lrRope.enabled = false;
 	}
 	/// <summary> Every frame: right-click triggers grab/release, updates rope line positions
 	/// between dragger and held object, and auto-releases if the held object was deactivated. </summary>
@@ -88,37 +87,41 @@ public class PlayerGrab : MonoBehaviour
 	{
 		// → right-click toggles grab/release
 		if (INPUT.K.InstantDown(KeyCode.Mouse1))
-			TryGrab();
+			TryGrabOrReleaseObject();
 
 		if (heldObject != null && !heldObject.activeInHierarchy)
-			Release();
+			ReleaseObject();
 
 		if (grabJoint != null && heldObject != null)
 		{
-			_rope.SetPosition(0, _dragger.transform.position);
+			_lrRope.SetPosition(0, _dragger.transform.position);
 			Vector3 anchorWorld = grabJoint.connectedBody.transform.TransformPoint(grabJoint.connectedAnchor);
-			_rope.SetPosition(1, anchorWorld);
-			_rope.enabled = true;
+			_lrRope.SetPosition(1, anchorWorld);
+			_lrRope.enabled = true;
 		}
-		else _rope.enabled = false;
+		else _lrRope.enabled = false;
 	}
+	#endregion
+
+	#region private API
 	/// <summary> If menu is open, does nothing. If already holding, releases. Otherwise raycasts
 	/// from camera — if it hits a Grabbable-tagged object, starts the grab via GrabObject. </summary>
-	void TryGrab()
+	void TryGrabOrReleaseObject()
 	{
-		Debug.Log(C.method(this, "lime"));
+		// Debug.Log(C.method(this, "lime"));
 		// → blocked when any menu panel is open
 		if (isAnyMenuOpen) return;
 		// → already holding? release instead
-		Debug.Log(C.method(this, "lime", adMssg: "no menu open"));
-		if (heldObject != null || grabJoint != null)
-		{ Release(); return; }
-		if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out RaycastHit hit, _interactRange, _grabbableMask))
+		// Debug.Log(C.method(this, "lime", adMssg: "no menu open"));
+		if (heldObject != null || grabJoint != null) { ReleaseObject(); return; }
+
+		Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
+		if (Physics.Raycast(ray, out RaycastHit hit, _interactRange, _grabbableMask))
 		{
-			Debug.Log(C.method(this, "lime", adMssg: "hit the grababble layer mask"));
-			GrabObject(hit);
+			// Debug.Log(C.method(this, "lime", adMssg: "hit the grababble layer mask"));
+			if (hit.collider.HasTag(TagType.grabbable))
+				GrabObject(hit);
 		}
-		// if (!hit.collider.HasTag(TagType.grabbable)) return;
 	}
 	/// <summary> Creates a SpringJoint between the kinematic dragger and the target’s Rigidbody.
 	/// Increases drag for a heavy feel, enables interpolation for smooth visuals, ignores
@@ -136,26 +139,31 @@ public class PlayerGrab : MonoBehaviour
 		rb.isKinematic = false;
 		UtilsPhaseB.IgnoreAllCollisions(heldObject, gameObject, true);
 		rb.interpolation = RigidbodyInterpolation.Interpolate;
-		grabJoint.breakForce = 120f;
-		grabJoint.breakTorque = 20f;
+		SetupSpringJoint(grabJoint, hit, rb);
+		_lrRope.positionCount = 2;
+		_lrRope.enabled = true;
+	}
+	void SetupSpringJoint(SpringJoint sj, RaycastHit hit, Rigidbody rb)
+	{
 		grabJoint.transform.position = hit.point;
-		grabJoint.anchor = Vector3.zero;
-		grabJoint.spring = 100f;
+		grabJoint.spring = 150f;
 		grabJoint.damper = 25f;
+		grabJoint.breakForce = 150f;
+		grabJoint.breakTorque = 60f;
+		grabJoint.anchor = Vector3.zero;
+		grabJoint.minDistance = 0.08f;
 		grabJoint.maxDistance = 0f;
 		grabJoint.connectedBody = rb;
 		grabJoint.gameObject.transform.position = _holdPos.position;
-		_rope.positionCount = 2;
-		_rope.enabled = true;
-		grabOriginalDrag = rb.linearDamping;
-		grabOriginalAngularDrag = rb.angularDamping;
-		rb.linearDamping = 2.5f;
-		rb.angularDamping = 0.3f;
+
+		grabOriginalDrag = rb.linearDamping; grabOriginalAngularDrag = rb.angularDamping; // save linear, angualDampening
+		rb.linearDamping = 3f; rb.angularDamping = 100f;
 	}
+
 	/// <summary> Destroys the SpringJoint, deactivates the dragger, restores the object’s original
 	/// drag values, re-enables collisions, hides the rope, and starts a 3s coroutine to disable
 	/// interpolation on the released object (saves CPU when idle). </summary>
-	void Release()
+	void ReleaseObject()
 	{
 		if (isAnyMenuOpen) return;
 		if (grabJoint != null)
@@ -174,13 +182,13 @@ public class PlayerGrab : MonoBehaviour
 			}
 		}
 		heldObject = null;
-		_rope.enabled = false;
+		_lrRope.enabled = false;
 	}
 	IEnumerator DisableInterpolationLater(Rigidbody body)
 	{
 		yield return new WaitForSeconds(3f);
 		if (body != null && (heldObject == null || heldObject.GetComponent<Rigidbody>() != body))
 			body.interpolation = RigidbodyInterpolation.None;
-	}
+	} 
 	#endregion
 }

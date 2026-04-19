@@ -6,7 +6,12 @@ using SPACE_UTIL;
 
 public class BaseHeldTool : MonoBehaviour, IInteractable, ISaveLoadableObject
 {
-	public PlayerController owner;
+	PlayerController owner;
+	public void SetOwner(PlayerController playerController)
+	{
+		owner = playerController;
+	}
+
 
 	public string GetObjectName()
 	{
