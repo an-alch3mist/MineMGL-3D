@@ -22,16 +22,6 @@ public static partial class GameEvents
 	}
 	// << when Somthng occured
 
-	// when money changed >>
-	public static event Action<float> OnMoneyChanged;
-	public static void RaiseMoneyChanged(float money)
-	{
-		LogSubscribersCount(nameof(OnMoneyChanged), OnMoneyChanged);
-		GameEvents.OnMoneyChanged? // if there is any subscribers
-			.Invoke(money);
-	}
-	// << when money changed
-
 	// when shop view is toggled >>
 	public static event Action OnOpenShopView;
 	public static void RaiseOpenShopView()
