@@ -19,11 +19,10 @@ public class EconomyManager : Singleton<EconomyManager>
 	[SerializeField] float _defaultMoney = 400f;
 	float currMoney;
 	#region public API
-	public float GetMoney() => this._defaultMoney;
+	public float GetMoney() => currMoney;
 	public void AddMoney(float deltaMoney)
 	{
 		currMoney += deltaMoney;
-		GameEvents.RaiseMoneyChanged(currMoney);
 	}
 	public bool CanAfford(float price)
 	{
@@ -32,11 +31,11 @@ public class EconomyManager : Singleton<EconomyManager>
 	#endregion
 
 	#region Unity Life Cycle
-	protected override void Awake()
+	// after moneyUI subscribed in onFIrstEnable
+	private void Start()
 	{
-		base.Awake();
-		Debug.Log(C.method(this));
 		currMoney = this._defaultMoney;
-	} 
+		GameEvents.RaiseMoneyChanged(money: currMoney);
+	}
 	#endregion
 }

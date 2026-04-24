@@ -14,8 +14,9 @@ public class moneyUI : MonoBehaviour
 
 	void HandleMoneyChanged(float money)
 	{
+		Debug.Log("money changed gotta alter the UI".colorTag("lime"));
 		EconomyManager economyManager = Singleton<EconomyManager>.Ins;
-		_moneyText.SetText(economyManager.GetMoney().formatMoney());
+		this._moneyText.text = economyManager.GetMoney().formatMoney();
 	}
 	bool isFirstEnable = true;
 	private void OnEnable()

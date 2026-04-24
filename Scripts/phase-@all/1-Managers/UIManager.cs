@@ -34,10 +34,11 @@ public class UIManager : Singleton<UIManager>
 	private void Update()
 	{
 		// esc: closeAllSubManagers/openPauseMenu
-		if (INPUT.K.InstantDown(KeyCode.Escape))
+		if (INPUT.K.InstantDown(KeyCode.O))
 		{
 			if (isAnyMenuOpen)
 			{
+				Debug.Log("UIManager request close all".colorTag("orange"));
 				CloseAllSubManager();
 				return;
 			}
