@@ -35,6 +35,7 @@ public class EconomyManager : Singleton<EconomyManager>
 	private void Start()
 	{
 		currMoney = this._defaultMoney;
+		// raise or notify in start or further in unity life cycle.
 		GameEvents.RaiseMoneyChanged(money: currMoney);
 	}
 	#endregion

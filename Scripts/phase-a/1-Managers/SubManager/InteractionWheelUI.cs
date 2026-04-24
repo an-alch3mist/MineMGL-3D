@@ -34,6 +34,7 @@ public class InteractionWheelUI : Singleton<InteractionWheelUI>
 			isFirstEnable = false;
 			return;
 		}
+		// future enable, so its alright to notify or raise here too.
 		GameEvents.RaiseMenuStateChanged(isAnyMenuOpen: true); // for cursorLock purpose
 	}
 	// not required for now

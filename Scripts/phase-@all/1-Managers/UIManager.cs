@@ -13,6 +13,7 @@ using SPACE_UTIL;
 /// <summary>
 /// reports menu state + closes all panels + routes keyboard input with priority
 /// </summary>
+[DefaultExecutionOrder(-100)] // just after INITManager
 public class UIManager : Singleton<UIManager>
 {
 	bool isAnyMenuOpen;
@@ -31,11 +32,23 @@ public class UIManager : Singleton<UIManager>
 	#endregion
 
 	#region Unity Life Cycle
+	bool isFirstEnable = true;
+	private void OnEnable()
+	{
+		if(isFirstEnable)
+		{
+			// subscription always done in onEnable
+			// raise is made in start on further in unity life cycle.
+			GameEvents.OnMenuStateChanged += (isAnyMenuOpen) => this.isAnyMenuOpen = isAnyMenuOpen;
+			isFirstEnable = false;
+		}
+	}
 	private void Update()
 	{
 		// esc: closeAllSubManagers/openPauseMenu
-		if (INPUT.K.InstantDown(KeyCode.O))
+		if (INPUT.K.InstantDown(KeyCode.Escape))
 		{
+			Debug.Log($"isAnyMenuOpen: {isAnyMenuOpen}".colorTag("cyan"));
 			if (isAnyMenuOpen)
 			{
 				Debug.Log("UIManager request close all".colorTag("orange"));
