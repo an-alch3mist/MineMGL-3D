@@ -40,7 +40,7 @@ public class ObjectHighlighterManager : Singleton<ObjectHighlighterManager>
 	[Header("Raycast")]
 	[SerializeField] Camera _cam;
 	[SerializeField] float _interactRange = 3f;
-	[SerializeField] LayerMask _interactLayerMask;
+	[SerializeField] LayerMask _highlightableLayerMask;
 	#endregion
 
 	#region private API
@@ -79,7 +79,7 @@ public class ObjectHighlighterManager : Singleton<ObjectHighlighterManager>
 	void OutlineLookedAtThing()
 	{
 		if (!Physics.Raycast(_cam.transform.position, _cam.transform.forward,
-			out RaycastHit hit, _interactRange, _interactLayerMask))
+			out RaycastHit hit, _interactRange, _highlightableLayerMask))
 			return;
 		// → find IHighlightable on hit object or its parents
 		var highlightable = hit.collider.GetComponentInParent<IHighlightable>();
