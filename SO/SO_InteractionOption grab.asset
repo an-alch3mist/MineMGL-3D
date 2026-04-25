@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: SO_InteractionOption grab
   m_EditorClassIdentifier: Assembly-CSharp::SO_InteractionOption
   interactionName: grab
-  descr: opens shop view UI
+  interactionType: 1
+  descr: grab the object
   sprite: {fileID: 21300000, guid: 4c7ae82cb6b7eb2409a6da11f15e8296, type: 3}

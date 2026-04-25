@@ -11,6 +11,7 @@ using SPACE_UTIL;
 public class SO_InteractionOption : ScriptableObject
 {
 	public string interactionName;
+	public InteractionType interactionType;
 	[TextArea(2, 3)] public string descr;
 	public Sprite sprite;
 }

@@ -36,4 +36,15 @@ public static partial class GameEvents
 			.Invoke(tool);
 	}
 	// << when tool was equipped
+
+	// when item was dropped from inventory >>
+	public static event Action<BaseHeldTool> OnItemDropped;
+	public static void RaiseItemDropped(BaseHeldTool tool)
+	{
+		LogSubscribersCount(nameof(OnItemDropped), OnItemDropped);
+		GameEvents.OnItemDropped? // if there is any subscribers
+			.Invoke(tool);
+	}
+	// << when item was dropped from inventory
+
 }

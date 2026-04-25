@@ -7,9 +7,11 @@
 /// <summary> interaction option types — replaces magic strings </summary>
 public enum InteractionType
 {
-	Take,
-	Destroy,
-	Toggle,
+	openShopView,
+	grab,
+	take,
+	destroy,
+	toggle,
 	// Pack, // Phase D:
 	// TakeBuilding,
 	// SetMold, // Phase E:
