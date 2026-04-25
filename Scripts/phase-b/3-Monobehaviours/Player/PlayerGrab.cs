@@ -105,8 +105,6 @@ public class PlayerGrab : MonoBehaviour
 		}
 		else _lrRope.enabled = false;
 	}
-	#endregion
-
 	#region private API
 	/// <summary> If menu is open, does nothing. If already holding, releases. Otherwise raycasts
 	/// from camera — if it hits a Grabbable-tagged object, starts the grab via GrabObject. </summary>
@@ -193,4 +191,6 @@ public class PlayerGrab : MonoBehaviour
 			body.interpolation = RigidbodyInterpolation.None;
 	} 
 	#endregion
+	#endregion
+
 }

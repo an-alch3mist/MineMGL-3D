@@ -59,6 +59,7 @@ public class PlayerController : Singleton<PlayerController>
 	float yRot;
 	bool isGrounded;
 	bool isDucking;
+	bool isInWater;
 	bool isUsingNoclip;
 	bool miningLightEnabled;
 	float cameraHeightVelocity;
@@ -122,7 +123,7 @@ public class PlayerController : Singleton<PlayerController>
 	/// Smoothly interpolates camera height and scales the character model to match. </summary>
 	void HandleDucking()
 	{
-		bool wantsDuck = Input.GetKey(KeyCode.C);
+		bool wantsDuck = Input.GetKey(KeyCode.LeftControl);
 		bool canStand = true;
 		if (!wantsDuck && isDucking)
 		{
@@ -215,25 +216,25 @@ public class PlayerController : Singleton<PlayerController>
 
 	#region public API fields
 	public Camera PlayerCam => _playerCam;
-	public Transform ViewModelContainer => _viewModelContainer;
-	public Transform HoldPosition => _holdPosition;
-	public Transform MagnetToolPosition => _magnetToolPosition;
-	public CharacterController CC => _cc;
-	public LayerMask InteractLayerMask => _interactLayerMask;
-	public float SelectedWalkSpeed => selectedWalkSpeed;
-	public float WalkSpeed => _walkSpeed;
-	public float SprintSpeed => _sprintSpeed;
-	public float DuckSpeed => _duckSpeed;
-	public Vector2 MoveInput => moveInput;
-	public bool IsGrounded => isGrounded;
-	public bool IsInWater { get; set; }
+	public Transform GetViewModelContainer => _viewModelContainer;
+	public Transform GetHoldPosition => _holdPosition;
+	public Transform GetMagnetToolPosition => _magnetToolPosition;
+	public CharacterController GetCC => _cc;
+	public LayerMask GetInteractLayerMask => _interactLayerMask;
+	public float GetSelectedWalkSpeed() => selectedWalkSpeed;
+	public float GetWalkSpeed() => _walkSpeed;
+	public float GetSprintSpeed() => _sprintSpeed;
+	public float GetDuckSpeed() => _duckSpeed;
+	public Vector2 GetMoveInput() => moveInput;
+	public bool GetIsGrounded() => isGrounded;
+	public bool SetIsInWater(bool isInWater) => this.isInWater = isInWater;
 	#endregion
 
 	#region public API
 	/// <summary> teleport player to position </summary>
     public void TeleportPlayer(Vector3 position)
     {
-        IsInWater = false;
+        isInWater = false;
         bool wasEnabled = _cc.enabled;
         _cc.enabled = false;
         transform.position = position;

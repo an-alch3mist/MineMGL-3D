@@ -100,15 +100,16 @@ public class PlayerCamera : MonoBehaviour
 	/// </summary>
 	private void Update()
 	{
-		if (Time.timeScale == 0f) return;
+		if (Time.timeScale == 0f) // when paused
+			return;
 		// → skip look input when any menu is open
 		if (!isAnyMenuOpen)
 		{
 			HandleLook();
 			HandleCameraBobbing();
 			HandleViewModelBobbing();
+			HandleFOV();
 		}
-		HandleFOV();
 		HandleViewPunchDecay();
 	}
 	/// <summary> Reads Mouse X/Y, applies sensitivity, rotates player around Y-axis (horizontal)
@@ -126,7 +127,7 @@ public class PlayerCamera : MonoBehaviour
 	/// </summary>
 	void HandleFOV()
 	{
-		bool sprinting = _pc.SelectedWalkSpeed > _pc.WalkSpeed && _pc.IsGrounded;
+		bool sprinting = _pc.GetSelectedWalkSpeed() > _pc.GetWalkSpeed() && _pc.GetIsGrounded();
 		float targetFOV = sprinting ? _baseFOV * 1.05f : _baseFOV;
 		currentFOV = Mathf.SmoothDamp(currentFOV, targetFOV, ref fovVelocity, 0.1f);
 		_cam.fieldOfView = currentFOV;
@@ -135,8 +136,8 @@ public class PlayerCamera : MonoBehaviour
 	/// grounded state. Faster movement = faster + larger bob. Airborne = no bob. </summary>
 	void HandleCameraBobbing()
 	{
-		bool moving = _pc.MoveInput.sqrMagnitude > 0.01f;
-		if (!_pc.IsGrounded)
+		bool moving = _pc.GetMoveInput().sqrMagnitude > 0.01f;
+		if (!_pc.GetIsGrounded())
 		{
 			bobbingPitch = Mathf.SmoothDamp(bobbingPitch, 0f, ref bobbingPitchVel, 0.2f);
 			bobbingYaw = Mathf.SmoothDamp(bobbingYaw, 0f, ref bobbingYawVel, 0.2f);
@@ -150,7 +151,7 @@ public class PlayerCamera : MonoBehaviour
 		}
 		else
 		{
-			float speedRatio = _pc.SelectedWalkSpeed / Mathf.Max(_pc.WalkSpeed, 0.01f);
+			float speedRatio = _pc.GetSelectedWalkSpeed() / Mathf.Max(_pc.GetWalkSpeed(), 0.01f);
 			bobbingCounter += Time.deltaTime * _baseBobbingSpeed * speedRatio;
 			if (bobbingCounter > Mathf.PI * 2f) { bobbingCounter -= Mathf.PI * 2f; yawDirMultiplier *= -1f; }
 			float wave = Mathf.Sin(bobbingCounter);
@@ -158,7 +159,7 @@ public class PlayerCamera : MonoBehaviour
 			bobbingPitch = Mathf.SmoothDamp(bobbingPitch, wave * _baseBobbingPitchAmount * speedRatio, ref bobbingPitchVel, 0.05f);
 			bobbingYaw = Mathf.SmoothDamp(bobbingYaw, wave * _baseBobbingYawAmount * speedRatio * yawDirMultiplier, ref bobbingYawVel, 0.05f);
 		}
-		Vector3 baseLocal = new Vector3(_cam.transform.localPosition.x, _pc.CC.height / 2f - 0.5f, _cam.transform.localPosition.z);
+		Vector3 baseLocal = new Vector3(_cam.transform.localPosition.x, _pc.GetCC.height / 2f - 0.5f, _cam.transform.localPosition.z);
 		_cam.transform.localPosition = baseLocal + new Vector3(0f, bobbingVerticalOffset, 0f);
 		Quaternion lookRot = Quaternion.Euler(xRot + viewPunchCurrent.x, viewPunchCurrent.y, viewPunchCurrent.z);
 		Quaternion bobRot = Quaternion.Euler(bobbingPitch, bobbingYaw, 0f);
@@ -169,25 +170,25 @@ public class PlayerCamera : MonoBehaviour
 	void HandleViewModelBobbing()
 	{
 		if (_viewModelContainer == null) return;
-		bool moving = _pc.MoveInput.sqrMagnitude > 0.01f;
-		bool justJumped = wasGroundedLastFrame && !_pc.IsGrounded;
-		bool justLanded = !wasGroundedLastFrame && _pc.IsGrounded;
+		bool moving = _pc.GetMoveInput().sqrMagnitude > 0.01f;
+		bool justJumped = wasGroundedLastFrame && !_pc.GetIsGrounded();
+		bool justLanded = !wasGroundedLastFrame && _pc.GetIsGrounded();
 		if (justJumped) jumpTargetOffset = _jumpBounceAmount;
 		else if (justLanded) jumpTargetOffset = _landBounceAmount;
 		jumpOffset = Mathf.SmoothDamp(jumpOffset, jumpTargetOffset, ref jumpVelocity, _jumpSmoothTime);
 		jumpTargetOffset = Mathf.MoveTowards(jumpTargetOffset, 0f, Time.deltaTime * Mathf.Abs(jumpTargetOffset / _jumpSmoothTime));
-		wasGroundedLastFrame = _pc.IsGrounded;
+		wasGroundedLastFrame = _pc.GetIsGrounded();
 
-		if (!_pc.IsGrounded || !moving)
+		if (!_pc.GetIsGrounded() || !moving)
 		{
-			float smoothTime = _pc.IsGrounded ? 0.1f : 0.2f;
+			float smoothTime = _pc.GetIsGrounded() ? 0.1f : 0.2f;
 			viewBobPitch = Mathf.SmoothDamp(viewBobPitch, 0f, ref viewBobPitchVel, smoothTime);
 			viewBobYaw = Mathf.SmoothDamp(viewBobYaw, 0f, ref viewBobYawVel, smoothTime);
 			viewBobVertical = Mathf.SmoothDamp(viewBobVertical, 0f, ref viewBobVerticalVel, smoothTime);
 		}
 		else
 		{
-			float sr = _pc.SelectedWalkSpeed / Mathf.Max(_pc.WalkSpeed, 0.01f);
+			float sr = _pc.GetSelectedWalkSpeed() / Mathf.Max(_pc.GetWalkSpeed(), 0.01f);
 			viewBobCounter += Time.deltaTime * _viewModelBobSpeed * sr;
 			if (viewBobCounter > Mathf.PI * 2f) { viewBobCounter -= Mathf.PI * 2f; viewBobYawDir *= -1; }
 			float wave = Mathf.Sin(viewBobCounter);
