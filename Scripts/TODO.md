@@ -3,7 +3,7 @@
 - that inventoryTest require the Tool.... components to be connected to scene gameObjects and exist in scene prior.
 ```
 
-```
+```sceneHeirarchy
 === Component Abbreviations ===
 dmc = MeshFilter | MeshRenderer
 rb = Rigidbody
@@ -206,3 +206,10 @@ lr = LineRenderer
 
 ```
 
+```
+also the phase-a-1 doesnt depend on phase-a (update the dependency graph-grid)
+```
+
+```
+why the guide/(Test/Manual/*.md) wasn't consise enough for the scene to work ?
+```
