@@ -11,6 +11,7 @@ public class bgUI : MonoBehaviour
 		if(isFirstEnable)
 		{
 			GameEvents.OnMenuStateChanged += (isAnyMenuOpen) => this.gameObject.SetActive(isAnyMenuOpen);
+			this.gameObject.SetActive(false); // deactivate once setUp Complete
 			isFirstEnable = false;
 		}
 	}
