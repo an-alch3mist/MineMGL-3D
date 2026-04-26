@@ -157,7 +157,6 @@ lr = LineRenderer
 │   └ countTxtBg (Panel) (scale:1.0 | cr, img, autoFitH)
 │     └ countText (TMP) (scale:1.0 | cr, TextMeshProUGUI)
 ├ EventSystem (scale:1.0 | EventSystem, InputSystemUIInputModule)
-├ INITManager (scale:1.0 | INITManager)
 ├ Level (scale:1.0 | no components)
 │ ├ Plane (scale:1.0 | dmc, mc, ProBuilderMesh, ProBuilderShape)
 │ ├ Cube (scale:1.0 | dmc, mc, ProBuilderMesh, ProBuilderShape)
