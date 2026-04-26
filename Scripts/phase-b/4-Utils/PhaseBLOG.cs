@@ -15,7 +15,7 @@ using SPACE_UTIL;
 /// </summary>
 public static class PhaseBLOG
 {
-	public static string LIST_SLOT__TO__JSON(List<InventoryDataService.Slot> SLOT)
+	public static string LIST_SLOT__TO__JSON(List<InventorySlot> SLOT)
 	{
 		var snapshot = SLOT.map(slot =>
 		{
@@ -27,7 +27,7 @@ public static class PhaseBLOG
 					toolQty = (slot.tool != null) ? slot.tool.GetQty() : 0,
 				},
 				slot.index,
-				isHotBar = slot.GetIsHotBar(),
+				slot.isHotBar,
 			};
 		});
 		return snapshot.ToNSJson(pretify: true);

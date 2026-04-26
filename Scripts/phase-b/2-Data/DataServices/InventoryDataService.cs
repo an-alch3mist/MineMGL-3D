@@ -11,20 +11,15 @@ using SPACE_UTIL;
 public class InventoryDataService
 {
 	#region private static API
-	static int hotBarSize = 10, totalBarSize = 40;
+	public static int hotBarSize = 10, totalBarSize = 40;
 	#endregion
 
 	#region Nested Entity
-	public class Slot
-	{
-		public BaseHeldTool tool;
-		public int index;
-		public bool GetIsHotBar() => index < InventoryDataService.hotBarSize;
-	}
+	
 	#endregion
 
 	#region private API
-	List<Slot> SLOT = new List<Slot>();
+	List<InventorySlot> SLOT = new List<InventorySlot>();
 	int selectedSlotIndex = 0;
 	#endregion
 
@@ -39,24 +34,24 @@ public class InventoryDataService
 	{
 		SLOT.Clear();
 		for (int i0 = 0; i0 < totalBarSize; i0 += 1)
-			SLOT.Add(new Slot { tool = null, index = i0 });
+			SLOT.Add(new InventorySlot { tool = null, index = i0 });
 		selectedSlotIndex = 0;
 	}
 	/// <summary>
 	/// get all slots
 	/// </summary>
 	/// <returns></returns>
-	public List<Slot> GetAllSlots()
+	public List<InventorySlot> GetAllSlots()
 	{
 		return SLOT;
 	}
-	public Slot GetActiveSlot()
+	public InventorySlot GetActiveSlot()
 	{
 		return SLOT.TryGetAt(selectedSlotIndex);
 	}
 	public BaseHeldTool GetActiveTool()
 	{
-		Slot slot = GetActiveSlot();
+		InventorySlot slot = GetActiveSlot();
 		if (slot != null)
 			return slot.tool;
 		return null;

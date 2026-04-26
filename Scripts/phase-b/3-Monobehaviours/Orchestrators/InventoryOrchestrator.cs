@@ -62,10 +62,10 @@ public class InventoryOrchestrator : MonoBehaviour
 		for (int i = 0; i < dataService.GetTotalBarSize(); i++)
 		{
 			var slot = dataService.GetAllSlots()[i];
-			Transform parent = slot.GetIsHotBar() ? _hotbarContainer : _extendedContainer;
+			Transform parent = slot.isHotBar ? _hotbarContainer : _extendedContainer;
 			var field = GameObject.Instantiate(_pfInventorySlot, parent).gc<Field_InventorySlot>();
 			field.SetEmpty();
-			field.SetIsHotBar(slot.GetIsHotBar());
+			field.SetIsHotBar(slot.isHotBar);
 			var relay = field.gameObject.AddComponent<UIEventRelay>();
 			relay.Index = i;
 			relay.onBeginDrag = HandleBeginDrag;
