@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+
 using TMPro;
 
 /// <summary>
@@ -503,13 +505,17 @@ public class Proto_InventoryFull : MonoBehaviour
 }
 
 /// <summary> Tags a world cube with its item index so raycast can identify it. </summary>
-public class WorldItemTag : MonoBehaviour { public int itemIndex; }
+public class WorldItemTag : MonoBehaviour
+{
+	public int itemIndex;
+}
 
 /// <summary> Inline EventSystem relay — same as SlotRelay but separate class name to avoid conflict. </summary>
 public class SlotRelay2 : MonoBehaviour,
 	IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerDownHandler
 {
 	public System.Action<PointerEventData> onBeginDrag, onDrag, onEndDrag, onDrop, onPointerDown;
+	//
 	public void OnBeginDrag(PointerEventData e) => onBeginDrag?.Invoke(e);
 	public void OnDrag(PointerEventData e) => onDrag?.Invoke(e);
 	public void OnEndDrag(PointerEventData e) => onEndDrag?.Invoke(e);
