@@ -14,10 +14,6 @@ public class InventoryDataService
 	public static int hotBarSize = 10, totalBarSize = 40;
 	#endregion
 
-	#region Nested Entity
-	
-	#endregion
-
 	#region private API
 	List<InventorySlot> SLOT = new List<InventorySlot>();
 	int selectedSlotIndex = 0;
@@ -37,6 +33,7 @@ public class InventoryDataService
 			SLOT.Add(new InventorySlot { tool = null, index = i0 });
 		selectedSlotIndex = 0;
 	}
+
 	/// <summary>
 	/// get all slots
 	/// </summary>
@@ -51,10 +48,14 @@ public class InventoryDataService
 	}
 	public BaseHeldTool GetActiveTool()
 	{
+		/*
 		InventorySlot slot = GetActiveSlot();
 		if (slot != null)
 			return slot.tool;
 		return null;
+		*/
+
+		return GetActiveSlot()?.tool;
 	}
 	public int GetActiveSlotIndex()
 	{
@@ -90,8 +91,7 @@ public class InventoryDataService
 				targetIndex = preferredSlot;
 		if(targetIndex == -1)
 			for(int i0 = 0; i0 < SLOT.Count; i0 += 1)
-				if(SLOT[i0].tool 
-== null)
+				if(SLOT[i0].tool == null)
 				{
 					targetIndex = i0;
 					break;
