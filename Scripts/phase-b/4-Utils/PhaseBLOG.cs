@@ -27,7 +27,7 @@ public static class PhaseBLOG
 					toolQty = (slot.tool != null) ? slot.tool.GetQty() : 0,
 				},
 				slot.index,
-				// isHotBar: slot.GetIsHotBar(),
+				isHotBar = slot.GetIsHotBar(),
 			};
 		});
 		return snapshot.ToNSJson(pretify: true);
