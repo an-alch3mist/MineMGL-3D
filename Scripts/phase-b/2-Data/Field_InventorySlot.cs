@@ -7,12 +7,12 @@ using TMPro;
 
 using SPACE_UTIL;
 
-public class Field_Inventory : MonoBehaviour
+public class Field_InventorySlot : MonoBehaviour
 {
 	#region inspector fields
-	[SerializeField] Image _icon, _bg;
-	[SerializeField] TMP_Text _nameText, _countText;
-	[SerializeField] GameObject _orangeBarThing, _hideWhenDragged;
+	public Image _icon, _bg;
+	public TMP_Text _nameText, _countText;
+	public GameObject _orangeBarThing, _hideWhenDragged;
 
 	[SerializeField]
 	Color _selectedColor = new Color(0.4f, 0.8f, 0.6f, 0.2f),
@@ -27,7 +27,7 @@ public class Field_Inventory : MonoBehaviour
 		this._nameText.text = $"";
 		this._countText.text = (count <= 1) ? $"" : count.ToString();
 	}
-	public void SetHighLighted(bool isSelected)
+	public void SetHighlighted(bool isSelected)
 	{
 		this._bg.color = (isSelected) ? this._selectedColor : this._notSelectedColor;
 	}
@@ -36,7 +36,7 @@ public class Field_Inventory : MonoBehaviour
 		this._icon.enabled = false;
 		this._nameText.text = $"";
 		this._countText.text = $"";
-		SetHighLighted(false);
+		SetHighlighted(false);
 	}
 	public void SetHovered(bool isHovered)
 	{

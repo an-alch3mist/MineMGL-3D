@@ -159,7 +159,7 @@ public class PlayerCamera : MonoBehaviour
 			bobbingPitch = Mathf.SmoothDamp(bobbingPitch, wave * _baseBobbingPitchAmount * speedRatio, ref bobbingPitchVel, 0.05f);
 			bobbingYaw = Mathf.SmoothDamp(bobbingYaw, wave * _baseBobbingYawAmount * speedRatio * yawDirMultiplier, ref bobbingYawVel, 0.05f);
 		}
-		Vector3 baseLocal = new Vector3(_cam.transform.localPosition.x, _pc.GetCC.height / 2f - 0.5f, _cam.transform.localPosition.z);
+		Vector3 baseLocal = new Vector3(_cam.transform.localPosition.x, _pc.GetCC().height / 2f - 0.5f, _cam.transform.localPosition.z);
 		_cam.transform.localPosition = baseLocal + new Vector3(0f, bobbingVerticalOffset, 0f);
 		Quaternion lookRot = Quaternion.Euler(xRot + viewPunchCurrent.x, viewPunchCurrent.y, viewPunchCurrent.z);
 		Quaternion bobRot = Quaternion.Euler(bobbingPitch, bobbingYaw, 0f);

@@ -19,7 +19,7 @@ public class InventoryDataService
 	{
 		public BaseHeldTool tool;
 		public int index;
-		public bool isHotBar { get => index < InventoryDataService.hotBarSize; }
+		public bool GetIsHotBar() => index < InventoryDataService.hotBarSize;
 	}
 	#endregion
 
@@ -65,7 +65,7 @@ public class InventoryDataService
 	{
 		return selectedSlotIndex;
 	}
-	public int GetIndexFotTool(BaseHeldTool tool)
+	public int GetIndexForTool(BaseHeldTool tool)
 	{
 		return SLOT.findIndex(slot => slot.tool == tool);
 	}
@@ -108,7 +108,7 @@ public class InventoryDataService
 	}
 	public void RemoveTool(BaseHeldTool tool)
 	{
-		int index = GetIndexFotTool(tool);
+		int index = GetIndexForTool(tool);
 		if (index != -1)
 			SLOT[index].tool = null;
 		if (GetActiveTool() == tool)

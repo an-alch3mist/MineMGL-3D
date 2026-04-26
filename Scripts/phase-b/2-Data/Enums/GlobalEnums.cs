@@ -4,6 +4,14 @@
 /// all enums introduced in Phase B — one file, one place
 /// </summary>
 
+/// <summary> animator parameter names as enum — never use raw strings.
+/// usage: _animator.Play(AnimParamType.attack1.ToString(), -1, 0f) </summary>
+public enum AnimParamType
+{
+	attack1,
+	// Phase E: isRunning, isSmelting, speed, fillPercent
+}
+
 /// <summary> interaction option types — replaces magic strings </summary>
 public enum InteractionType
 {

@@ -25,31 +25,31 @@ using SPACE_UTIL;
 public class PlayerController : Singleton<PlayerController>
 {
 	#region Inspector Fields
-	 [Header("Move")]
-    [SerializeField] float _walkSpeed = 3f;
-    [SerializeField] float _sprintSpeed = 5f;
-    [SerializeField] float _duckSpeed = 1.5f;
-    [SerializeField] float _jumpHeight = 2f;
-    [SerializeField] float _gravity = -10f;
-    [SerializeField] float _slideSpeed = 8f;
-    [SerializeField] float _standingSlopeLimit = 60f;
-    [SerializeField] float _duckHeight = 1f;
-    [SerializeField] float _standingHeight = 2f;
-    [SerializeField] float _duckingSpeed = 10f;
-    [SerializeField] CharacterController _cc;
-    [SerializeField] Transform _groundCheck;
-    [SerializeField] LayerMask _groundLayer;
-    // [SerializeField] Transform _characterModel;
+	[Header("Move")]
+	[SerializeField] float _walkSpeed = 3f;
+	[SerializeField] float _sprintSpeed = 5f;
+	[SerializeField] float _duckSpeed = 1.5f;
+	[SerializeField] float _jumpHeight = 2f;
+	[SerializeField] float _gravity = -10f;
+	[SerializeField] float _slideSpeed = 8f;
+	[SerializeField] float _standingSlopeLimit = 60f;
+	[SerializeField] float _duckHeight = 1f;
+	[SerializeField] float _standingHeight = 2f;
+	[SerializeField] float _duckingSpeed = 10f;
+	[SerializeField] CharacterController _cc;
+	[SerializeField] Transform _groundCheck;
+	[SerializeField] LayerMask _groundLayer;
+	// [SerializeField] Transform _characterModel;
 
-    [Header("References (Owner chain)")]
-    [SerializeField] Camera _playerCam;
-    [SerializeField] Transform _viewModelContainer;
-    [SerializeField] Transform _holdPosition;
-    [SerializeField] Transform _magnetToolPosition;
-    [SerializeField] LayerMask _interactLayerMask;
-    [Header("Mining Hat Lights")]
-    [SerializeField] GameObject _nightVisionLight;
-    [SerializeField] GameObject _miningHatLight;
+	[Header("References (Owner chain)")]
+	[SerializeField] Camera _playerCam;
+	[SerializeField] Transform _viewModelContainer;
+	[SerializeField] Transform _holdPosition;
+	[SerializeField] Transform _magnetToolPosition;
+	[SerializeField] LayerMask _interactLayerMask;
+	[Header("Mining Hat Lights")]
+	[SerializeField] GameObject _nightVisionLight;
+	[SerializeField] GameObject _miningHatLight;
 	#endregion
 
 	#region private API fields
@@ -72,7 +72,7 @@ public class PlayerController : Singleton<PlayerController>
 	private void OnEnable()
 	{
 		Debug.Log(C.method(this));
-		if(isFirstEnable)
+		if (isFirstEnable)
 		{
 			INPUT.UI.SetCursor(isFpsMode: true);
 			// purpose: lock/unlock movement when menus open
@@ -89,7 +89,7 @@ public class PlayerController : Singleton<PlayerController>
 		{
 			#region extra: NoClipMovement
 			if (INPUT.K.InstantDown(KeyCode.V)) ToggleNoclip();
-			if (isUsingNoclip) HandleNoclipMovement(); 
+			if (isUsingNoclip) HandleNoclipMovement();
 			#endregion
 			else
 			{
@@ -215,12 +215,12 @@ public class PlayerController : Singleton<PlayerController>
 	#endregion
 
 	#region public API fields
-	public Camera PlayerCam => _playerCam;
-	public Transform GetViewModelContainer => _viewModelContainer;
-	public Transform GetHoldPosition => _holdPosition;
-	public Transform GetMagnetToolPosition => _magnetToolPosition;
-	public CharacterController GetCC => _cc;
-	public LayerMask GetInteractLayerMask => _interactLayerMask;
+	public Camera GetPlayerCam() => _playerCam;
+	public Transform GetViewModelContainer() => _viewModelContainer;
+	public Transform GetHoldPosition() => _holdPosition;
+	public Transform GetMagnetToolPosition() => _magnetToolPosition;
+	public CharacterController GetCC() => _cc;
+	public LayerMask GetInteractLayerMask() => _interactLayerMask;
 	public float GetSelectedWalkSpeed() => selectedWalkSpeed;
 	public float GetWalkSpeed() => _walkSpeed;
 	public float GetSprintSpeed() => _sprintSpeed;
@@ -232,19 +232,19 @@ public class PlayerController : Singleton<PlayerController>
 
 	#region public API
 	/// <summary> teleport player to position </summary>
-    public void TeleportPlayer(Vector3 position)
-    {
-        isInWater = false;
-        bool wasEnabled = _cc.enabled;
-        _cc.enabled = false;
-        transform.position = position;
-        _cc.enabled = wasEnabled;
-    }
-    /// <summary> teleport player to position + rotation </summary>
-    public void TeleportPlayer(Vector3 position, Vector3 rotation)
-    {
-        TeleportPlayer(position);
-        transform.rotation = Quaternion.Euler(rotation);
-    }
+	public void TeleportPlayer(Vector3 position)
+	{
+		isInWater = false;
+		bool wasEnabled = _cc.enabled;
+		_cc.enabled = false;
+		transform.position = position;
+		_cc.enabled = wasEnabled;
+	}
+	/// <summary> teleport player to position + rotation </summary>
+	public void TeleportPlayer(Vector3 position, Vector3 rotation)
+	{
+		TeleportPlayer(position);
+		transform.rotation = Quaternion.Euler(rotation);
+	}
 	#endregion
 }
