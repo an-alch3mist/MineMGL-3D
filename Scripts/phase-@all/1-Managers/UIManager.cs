@@ -22,6 +22,7 @@ public class UIManager : Singleton<UIManager>
 	{
 		GameEvents.RaiseCloseShopView();
 		GameEvents.RaiseCloseInteractionView();
+		GameEvents.RaiseCloseInventoryView();
 	}
 
 	#region public API

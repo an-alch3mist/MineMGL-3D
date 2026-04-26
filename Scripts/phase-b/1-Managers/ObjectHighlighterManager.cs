@@ -83,7 +83,8 @@ public class ObjectHighlighterManager : Singleton<ObjectHighlighterManager>
 			return;
 		// → find IHighlightable on hit object or its parents
 		var highlightable = hit.collider.GetComponentInParent<IHighlightable>();
-		if (highlightable == null) return;
+		if (highlightable == null)
+			return;
 		// → ask the object what profile it wants (null = skip highlighting)
 		var profile = highlightable.GetHighlightProfile(activeTool);
 		if (profile == null) return;

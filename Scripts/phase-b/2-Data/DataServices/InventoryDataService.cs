@@ -11,7 +11,7 @@ using SPACE_UTIL;
 public class InventoryDataService
 {
 	#region private static API
-	public static int hotBarSize = 10, totalBarSize = 40;
+	public static int hotBarSize = 5, totalBarSize = 12;
 	#endregion
 
 	#region private API

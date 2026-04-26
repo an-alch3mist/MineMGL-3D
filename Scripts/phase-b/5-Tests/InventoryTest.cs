@@ -37,22 +37,30 @@ O → log snapshot";
 	#endregion
 
 	#region Unity Life Cycle
-	private void Start()
+	bool isFirstEnable = true;
+	private void OnEnable()
 	{
-		INPUT.UI.SetCursor(isFpsMode: true);
-		// purpose: log tool switch events
-		GameEvents.OnToolSwitched += (idx) => Debug.Log($"[InventoryTest] ToolSwitched to slot {idx}".colorTag("lime"));
-		// purpose: log tool pickup events
-		GameEvents.OnItemPickedUp += (tool) => Debug.Log($"[InventoryTest] Picked up: {tool.GetName()}".colorTag("cyan"));
-		// purpose: log tool drop events
-		GameEvents.OnItemDropped += (tool) => Debug.Log($"[InventoryTest] Dropped: {tool.GetName()}".colorTag("orange"));
-		// purpose: log inventory view events
-		GameEvents.OnOpenInventoryView += () => Debug.Log("[InventoryTest] Inventory OPENED".colorTag("lime"));
-		GameEvents.OnCloseInventoryView += () => Debug.Log("[InventoryTest] Inventory CLOSED".colorTag("orange"));
+		Debug.Log(C.method(this));
+		if (isFirstEnable)
+		{
+			INPUT.UI.SetCursor(isFpsMode: true);
+			// purpose: log tool switch events
+			GameEvents.OnToolSwitched += (idx) => Debug.Log($"[InventoryTest] ToolSwitched to slot {idx}".colorTag("lime"));
+			// purpose: log tool pickup events
+			GameEvents.OnItemPickedUp += (tool) => Debug.Log($"[InventoryTest] Picked up: {tool.GetName()}".colorTag("cyan"));
+			// purpose: log tool drop events
+			GameEvents.OnItemDropped += (tool) => Debug.Log($"[InventoryTest] Dropped: {tool.GetName()}".colorTag("orange"));
+			// purpose: log inventory view events
+			GameEvents.OnOpenInventoryView += () => Debug.Log("[InventoryTest] Inventory OPENED".colorTag("lime"));
+			GameEvents.OnCloseInventoryView += () => Debug.Log("[InventoryTest] Inventory CLOSED".colorTag("orange"));
+			isFirstEnable = false;
+		}
 	}
 	//
 	private void Update()
 	{
+		INPUT.UI.SetCursor(isFpsMode: !Singleton<UIManager>.Ins.GetIsAnyMenuOpen());
+		//
 		if (INPUT.K.InstantDown(KeyCode.Space))
 		{
 			// purpose: simulate tool pickup from world

@@ -52,7 +52,7 @@ public class BaseHeldTool : BaseSellableItem, IInteractable, ISaveLoadableObject
 	/// <summary> single click fire </summary>
 	public virtual void PrimaryFire()
 	{
-		if (_viewModelAnimator != null) _viewModelAnimator.Play(AnimParamType.attack1.ToString(), -1, 0f);
+		 _viewModelAnimator?.Play(AnimParamType.attack1.ToString(), -1, 0f);
 	}
 	/// <summary> held fire (continuous) </summary>
 	public virtual void PrimaryFireHeld() { }
