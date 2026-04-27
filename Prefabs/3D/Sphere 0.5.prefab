@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8064525257813372958}
   - component: {fileID: -1766704865413975556}
   - component: {fileID: 3373478801462029374}
+  - component: {fileID: -1641579209513222618}
   m_Layer: 10
   m_Name: Sphere 0.5
   m_TagString: grabbable
@@ -34125,3 +34126,23 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-1641579209513222618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6397356629837198329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b4c26bc55a214549b8bc1e523bb94c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MockTool
+  _name: mShop
+  _icon: {fileID: 21300000, guid: 4c7ae82cb6b7eb2409a6da11f15e8296, type: 3}
+  _maxStack: 10
+  _color: {r: 0.6509434, g: 0.38995194, b: 0.4029885, a: 1}
+  _equippedScaleMultiplier: 0.8
+  _equippedDistance: 1.5
+  _equippedOffset: {x: 0.4, y: -0.3, z: 0}
+  _dropOffset: {x: 0.5, y: -0.3, z: 1.5}
