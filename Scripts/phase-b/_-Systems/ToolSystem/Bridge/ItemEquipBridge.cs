@@ -16,7 +16,7 @@ public class ItemEquipBridge : MonoBehaviour
 	[SerializeField] Camera _cam;
 	[SerializeField] Transform _viewModelContainer;
 	[SerializeField] Transform _magnetToolPos;
-
+	//
 	void Start()
 	{
 		// purpose: send player context to equipped item so it can raycast + parent ViewModel
