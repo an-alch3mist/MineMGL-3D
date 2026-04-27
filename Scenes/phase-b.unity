@@ -1252,7 +1252,7 @@ GameObject:
   - component: {fileID: 132816542}
   - component: {fileID: 132816541}
   m_Layer: 0
-  m_Name: viewModel
+  m_Name: characterModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7427,8 +7427,9 @@ GameObject:
   m_Component:
   - component: {fileID: 446653837}
   - component: {fileID: 446653838}
+  - component: {fileID: 446653839}
+  - component: {fileID: 446653840}
   - component: {fileID: 446653841}
-  - component: {fileID: 446653845}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -7451,6 +7452,7 @@ Transform:
   m_Children:
   - {fileID: 330585546}
   - {fileID: 132816540}
+  - {fileID: 1776221504}
   - {fileID: 511577882}
   - {fileID: 371037628}
   - {fileID: 967394928}
@@ -7484,6 +7486,75 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &446653839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446653836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e96630024356ab488acee88fb6bf324, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  _walkSpeed: 3
+  _sprintSpeed: 5
+  _duckSpeed: 2
+  _jumpHeight: 2
+  _gravity: -9.81
+  _slideSpeed: 8
+  _standingSlopeLimit: 60
+  _duckHeight: 1
+  _standingHeight: 2
+  _duckingSpeed: 10
+  _cc: {fileID: 446653838}
+  _groundCheck: {fileID: 485472390}
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _characterModel: {fileID: 132816540}
+  _playerCam: {fileID: 330585545}
+  _viewModelContainer: {fileID: 1776221504}
+  _holdPosition: {fileID: 1772451171}
+  _magnetToolPosition: {fileID: 371037628}
+  _interactLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  _nightVisionLight: {fileID: 967394927}
+  _miningHatLight: {fileID: 236428932}
+--- !u!114 &446653840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446653836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 301e1a6bbb349f647834d83ababe9cbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCamera
+  _mouseSensitivity: 2
+  _cam: {fileID: 330585545}
+  _movement: {fileID: 446653839}
+  _baseFOV: 70
+  _baseBobbingSpeed: 14
+  _baseBobbingAmount: 0.05
+  _baseBobbingPitchAmount: 1
+  _baseBobbingYawAmount: 1
+  _viewModelContainer: {fileID: 1776221504}
+  _viewModelBobSpeed: 8
+  _viewModelBobAmount: 0.05
+  _viewModelBobPitchAmount: 1.5
+  _viewModelBobYawAmount: 1.5
+  _viewModelLookSwayAmount: 0.05
+  _viewModelLookSwayMax: 2
+  _viewModelBasePos: {x: 0, y: 0, z: 0}
+  _viewModelBaseRotEuler: {x: 0, y: 0, z: 0}
+  _jumpBounceAmount: -0.12
+  _landBounceAmount: 0.08
+  _jumpSmoothTime: 0.2
 --- !u!114 &446653841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7493,31 +7564,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 446653836}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c8c39c336e66ce4d9d53a3805717463, type: 3}
+  m_Script: {fileID: 11500000, guid: e07af4bf3a6b569438fa9cc916ececd7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraShaker
-  _player: {fileID: 446653837}
-  _posAmp: 0.05
-  _rotAmp: 0.4
-  _posFreq: 0.2
-  _rotFreq: 0.2
---- !u!114 &446653845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446653836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb2c6d7c74627ea41af9cb20470a4805, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SimplePlayerInteraction
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerGrab
   _cam: {fileID: 330585545}
-  _range: 4
-  _interactionMask:
+  _holdPos: {fileID: 1772451171}
+  _dragger: {fileID: 511577881}
+  _rope: {fileID: 1135489455}
+  _interactRange: 2
+  _interactLayerMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 1024
+  _movement: {fileID: 446653839}
 --- !u!1 &453639643
 GameObject:
   m_ObjectHideFlags: 0
@@ -18532,6 +18590,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractionWheelUI
   _container: {fileID: 1433546784}
   _pfInteractionOption: {fileID: 7089420574727634362, guid: 6e1d620c7fe14074da54e970ce0fe574, type: 3}
+--- !u!1 &1776221503
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1776221504}
+  m_Layer: 0
+  m_Name: viewModelContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1776221504
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776221503}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.351}
+  m_LocalScale: {x: 0.2, y: 1, z: 0.2}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 446653837}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1784079729
 GameObject:
   m_ObjectHideFlags: 0

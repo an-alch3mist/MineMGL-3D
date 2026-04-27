@@ -8,8 +8,8 @@
 /// </summary>
 public class BaseSellableItem : BasePhysicsObject
 {
-	protected float baseSellValue = 1f;
+	public float aseSellValue = 1f;
 
-	/// <summary> base sell value, optionally overridden by OrePiece etc. </summary>
-	public virtual float GetSellValue() => baseSellValue;
+	/// <summary> base sell value, overridden by OrePiece etc. </summary>
+	public virtual float GetSellValue() => aseSellValue;
 }

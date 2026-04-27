@@ -1,14 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-
-using SPACE_UTIL;
-
 
 /// <summary>
 /// I'm the base class for any physics object that can sit on conveyors. I cache my Rigidbody
@@ -22,40 +13,36 @@ using SPACE_UTIL;
 public class BasePhysicsObject : MonoBehaviour
 {
 	#region constants
-	public static float standardLinearDampening { get;  } = 0.2f;
-	public static float standardAngularDampening { get; }  = 0.05f;
+	public const float STANDARD_LINEAR_DAMPING = 0.2f;
+	public const float STANDARD_ANGULAR_DAMPING = 0.05f;
 	#endregion
 
 	#region private API
-	Vector3 sumVel;
-	float bestY;
-	int count;
-	bool retainY;
+	[HideInInspector] public Vector3 SumVelocity;
+	[HideInInspector] public float BestY;
+	[HideInInspector] public int Count;
+	[HideInInspector] public bool RetainY;
 	Rigidbody rb;
 	#endregion
 
 	#region public API
-	public Vector3 GetSumVel() => sumVel;
-	public float GetBestY() => bestY;
-	public int GetCount() => count;
-	public bool GetRetainY() => retainY;
-	public Rigidbody GetRb() => rb;
+	public Rigidbody Rb => rb;
 	/// <summary> add conveyor velocity contribution </summary>
 	public void AddConveyorVelocity(Vector3 velocity, bool retainY)
 	{
-		if (count == 0) sumVel = velocity;
-		else sumVel += velocity;
-		if (velocity.y > bestY) bestY = velocity.y;
-		count++;
-		if (retainY) this.retainY = true;
+		if (Count == 0) SumVelocity = velocity;
+		else SumVelocity += velocity;
+		if (velocity.y > BestY) BestY = velocity.y;
+		Count++;
+		if (retainY) RetainY = true;
 	}
 	/// <summary> reset per-frame accumulation </summary>
 	public void ResetAccum()
 	{
-		sumVel = default;
-		bestY = 0f;
-		count = 0;
-		retainY = false;
+		SumVelocity = default;
+		BestY = 0f;
+		Count = 0;
+		RetainY = false;
 	}
 	#endregion
 
@@ -66,8 +53,11 @@ public class BasePhysicsObject : MonoBehaviour
 	{
 		// → cache Rigidbody for conveyor velocity + pool reset
 		rb = GetComponent<Rigidbody>();
-		rb.linearDamping = standardLinearDampening;
-		rb.angularDamping = standardAngularDampening;
+		if (rb != null)
+		{
+			rb.linearDamping = STANDARD_LINEAR_DAMPING;
+			rb.angularDamping = STANDARD_ANGULAR_DAMPING;
+		}
 	}
 	protected virtual void OnEnable()
 	{
