@@ -396,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b4c26bc55a214549b8bc1e523bb94c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MockTool
-  _name: mShop
+  _name: mShopB
   _icon: {fileID: 21300000, guid: 4c7ae82cb6b7eb2409a6da11f15e8296, type: 3}
   _maxStack: 10
   _color: {r: 0.6509434, g: 0.38995194, b: 0.4029885, a: 1}
