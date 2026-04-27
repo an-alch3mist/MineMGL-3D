@@ -15,19 +15,6 @@ using SPACE_UTIL;
 /// </summary>
 public static partial class GameEvents
 {
-	/*
-	// when Somthng occured >>
-	public static event Action<int> OnSomthng;
-	public static void RaiseSomthng(int index)
-	{
-		LogSubscribersCount(nameof(OnSomthng), OnSomthng);
-		GameEvents.OnSomthng? // if there is any subscribers
-			.Invoke(index);
-	}
-	// << when Somthng occured
-	*/
-
-	#region Inventory
 	// when inventory view opened >>
 	public static event Action OnOpenInventoryView;
 	public static void RaiseOpenInventoryView()
@@ -37,7 +24,6 @@ public static partial class GameEvents
 			.Invoke();
 	}
 	// << when inventory view opened
-
 	// when inventory view closed >>
 	public static event Action OnCloseInventoryView;
 	public static void RaiseCloseInventoryView()
@@ -47,16 +33,14 @@ public static partial class GameEvents
 			.Invoke();
 	}
 	// << when inventory view closed
-	#endregion
 
-	#region Tool
 	// when tool pickup was requested from world >>
-	public static event Action<BaseHeldTool> OnToolPickupRequested;
-	public static void RaiseToolPickupRequested(BaseHeldTool tool)
+	public static event Action<IInventoryItem> OnToolPickupRequested;
+	public static void RaiseToolPickupRequested(IInventoryItem item)
 	{
 		LogSubscribersCount(nameof(OnToolPickupRequested), OnToolPickupRequested);
-		GameEvents.OnToolPickupRequested? // if there is any subscribers
-			.Invoke(tool);
+		GameEvents.OnToolPickupRequested?
+			.Invoke(item);
 	}
 	// << when tool pickup was requested from world
 
@@ -68,38 +52,35 @@ public static partial class GameEvents
 		GameEvents.OnToolSwitched? // if there is any subscribers
 			.Invoke(slotIndex);
 	}
-	// << when active tool was switched 
+	// << when active tool was switched
 
-	// when tool was equipped (activated in hotbar) >>
-	public static event Action<BaseHeldTool> OnToolEquipped;
-	public static void RaiseToolEquipped(BaseHeldTool tool)
-	{
-		LogSubscribersCount(nameof(OnToolEquipped), OnToolEquipped);
-		GameEvents.OnToolEquipped? // if there is any subscribers
-			.Invoke(tool);
-	}
-	// << when tool was equipped
-	#endregion
-
-	#region Item
 	// when item was picked up into inventory >>
-	public static event Action<BaseHeldTool> OnItemPickedUp;
-	public static void RaiseItemPickedUp(BaseHeldTool tool)
+	public static event Action<IInventoryItem> OnItemPickedUp;
+	public static void RaiseItemPickedUp(IInventoryItem item)
 	{
 		LogSubscribersCount(nameof(OnItemPickedUp), OnItemPickedUp);
-		GameEvents.OnItemPickedUp? // if there is any subscribers
-			.Invoke(tool);
+		GameEvents.OnItemPickedUp?
+			.Invoke(item);
 	}
 	// << when item was picked up into inventory
 
 	// when item was dropped from inventory >>
-	public static event Action<BaseHeldTool> OnItemDropped;
-	public static void RaiseItemDropped(BaseHeldTool tool)
+	public static event Action<IInventoryItem> OnItemDropped;
+	public static void RaiseItemDropped(IInventoryItem item)
 	{
 		LogSubscribersCount(nameof(OnItemDropped), OnItemDropped);
-		GameEvents.OnItemDropped? // if there is any subscribers
-			.Invoke(tool);
+		GameEvents.OnItemDropped?
+			.Invoke(item);
 	}
-	// << when item was dropped from inventory 
-	#endregion
+	// << when item was dropped from inventory
+
+	// when item was equipped (activated in hotbar) >>
+	public static event Action<IInventoryItem> OnItemEquipped;
+	public static void RaiseItemEquipped(IInventoryItem item)
+	{
+		LogSubscribersCount(nameof(OnItemEquipped), OnItemEquipped);
+		GameEvents.OnItemEquipped?
+			.Invoke(item);
+	}
+	// << when item was equipped
 }

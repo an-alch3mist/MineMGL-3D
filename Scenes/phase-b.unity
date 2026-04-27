@@ -7429,9 +7429,6 @@ GameObject:
   - component: {fileID: 446653838}
   - component: {fileID: 446653841}
   - component: {fileID: 446653845}
-  - component: {fileID: 446653842}
-  - component: {fileID: 446653843}
-  - component: {fileID: 446653844}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -7504,95 +7501,6 @@ MonoBehaviour:
   _rotAmp: 0.4
   _posFreq: 0.2
   _rotFreq: 0.2
---- !u!114 &446653842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446653836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0ebab5802c7d1743b3a46ebbb37cacd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  _walkSpeed: 3
-  _sprintSpeed: 5
-  _duckSpeed: 2
-  _jumpHeight: 2
-  _gravity: -9.81
-  _slideSpeed: 8
-  _standingSlopeLimit: 60
-  _duckHeight: 1
-  _standingHeight: 2
-  _duckingSpeed: 10
-  _cc: {fileID: 446653838}
-  _groundCheck: {fileID: 485472390}
-  _groundLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  _playerCam: {fileID: 330585545}
-  _viewModelContainer: {fileID: 132816540}
-  _holdPosition: {fileID: 1772451171}
-  _magnetToolPosition: {fileID: 371037628}
-  _interactLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  _nightVisionLight: {fileID: 967394927}
-  _miningHatLight: {fileID: 236428932}
---- !u!114 &446653843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446653836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3afe378d0ff48204d9dea025b37c10af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerCamera
-  _mouseSensitivity: 2
-  _cam: {fileID: 330585545}
-  _pc: {fileID: 446653842}
-  _baseFOV: 70
-  _baseBobbingSpeed: 14
-  _baseBobbingAmount: 0.05
-  _baseBobbingPitchAmount: 1
-  _baseBobbingYawAmount: 1
-  _viewModelContainer: {fileID: 132816540}
-  _viewModelBobSpeed: 8
-  _viewModelBobAmount: 0.05
-  _viewModelBobPitchAmount: 1.5
-  _viewModelBobYawAmount: 1.5
-  _viewModelLookSwayAmount: 0.05
-  _viewModelLookSwayMax: 2
-  _viewModelBasePos: {x: 0, y: 0, z: 0}
-  _viewModelBaseRotEuler: {x: 0, y: 0, z: 0}
-  _jumpBounceAmount: -0.12
-  _landBounceAmount: 0.08
-  _jumpSmoothTime: 0.2
---- !u!114 &446653844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446653836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7e07b3f58fe33044822e9655a10a0e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerGrab
-  _cam: {fileID: 330585545}
-  _holdPos: {fileID: 1772451171}
-  _dragger: {fileID: 511577881}
-  _lrRope: {fileID: 1135489455}
-  _interactRange: 2.5
-  _grabbableMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  _pc: {fileID: 446653842}
 --- !u!114 &446653845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8251,7 +8159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ad18015004f3ce418b208afb4386d05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RbDraggerController
-  _playerGrab: {fileID: 446653844}
+  _playerGrab: {fileID: 0}
 --- !u!1 &515940803
 GameObject:
   m_ObjectHideFlags: 0
@@ -15295,9 +15203,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ObjectHighlighterManager
   _cam: {fileID: 330585545}
   _interactRange: 3
-  _highlightableLayerMask:
+  _interactLayerMask:
     serializedVersion: 2
-    m_Bits: 1152
+    m_Bits: 0
 --- !u!1 &1562458738
 GameObject:
   m_ObjectHideFlags: 0

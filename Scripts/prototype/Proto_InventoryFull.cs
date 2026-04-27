@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
 using TMPro;
 
 /// <summary>
@@ -69,6 +67,8 @@ public class Proto_InventoryFull : MonoBehaviour
 		public Color color;
 		public GameObject worldGO;
 		public bool inInventory;
+		public int qty;
+		public int maxStack;
 	}
 
 	List<ItemData> allItems = new List<ItemData>();
@@ -81,6 +81,7 @@ public class Proto_InventoryFull : MonoBehaviour
 	List<GameObject> slotGOs = new List<GameObject>();
 	GameObject ghostGO;
 	Image ghostImage;
+	TMP_Text ghostCountText;
 	GameObject infoPanelGO;
 	TMP_Text infoNameText;
 	TMP_Text statusText;
@@ -93,10 +94,13 @@ public class Proto_InventoryFull : MonoBehaviour
 		slots = new ItemData?[slotCount];
 
 		// → spawn 4 world cubes
-		SpawnWorldItem("Pickaxe", new Color(0.8f, 0.4f, 0.2f), new Vector3(-2, 0.5f, 0));
-		SpawnWorldItem("Magnet", new Color(0.9f, 0.2f, 0.2f), new Vector3(-0.7f, 0.5f, 0));
-		SpawnWorldItem("Hammer", new Color(0.5f, 0.5f, 0.6f), new Vector3(0.7f, 0.5f, 0));
-		SpawnWorldItem("Hat", new Color(0.9f, 0.9f, 0.2f), new Vector3(2, 0.5f, 0));
+		// → spawn world items (some duplicates to test stacking)
+		SpawnWorldItem("Pickaxe", new Color(0.8f, 0.4f, 0.2f), new Vector3(-3, 0.5f, 0), maxStack: 1);
+		SpawnWorldItem("Magnet", new Color(0.9f, 0.2f, 0.2f), new Vector3(-1.5f, 0.5f, 0), maxStack: 1);
+		SpawnWorldItem("Hammer", new Color(0.5f, 0.5f, 0.6f), new Vector3(0, 0.5f, 0), maxStack: 1);
+		SpawnWorldItem("Dynamite", new Color(1f, 0.5f, 0f), new Vector3(1.5f, 0.5f, 0), maxStack: 5);
+		SpawnWorldItem("Dynamite", new Color(1f, 0.5f, 0f), new Vector3(2f, 0.5f, 0), maxStack: 5);
+		SpawnWorldItem("Dynamite", new Color(1f, 0.5f, 0f), new Vector3(2.5f, 0.5f, 0), maxStack: 5);
 
 		// → build UI
 		var container = CreateSlotContainer();
@@ -157,11 +161,32 @@ public class Proto_InventoryFull : MonoBehaviour
 		if (itemIndex < 0 || itemIndex >= allItems.Count) return;
 		var item = allItems[itemIndex];
 
-		// → duplicate guard: skip if already in inventory
+		// → duplicate guard: skip if this exact world GO is already picked up
 		if (item.inInventory)
 		{
 			Debug.Log($"[Proto] '{item.name}' already in inventory — skipped");
 			return;
+		}
+
+		// → stacking: if same name exists in a slot with space, add to qty
+		if (item.maxStack > 1)
+		{
+			for (int i = 0; i < slots.Length; i++)
+			{
+				if (slots[i].HasValue && slots[i].Value.name == item.name && slots[i].Value.qty < slots[i].Value.maxStack)
+				{
+					var existing = slots[i].Value;
+					existing.qty++;
+					slots[i] = existing;
+					item.inInventory = true;
+					item.worldGO.SetActive(false);
+					allItems[itemIndex] = item;
+					RefreshAllSlots();
+					UpdateStatus();
+					Debug.Log($"[Proto] Stacked '{item.name}' → slot {i} (qty: {existing.qty})");
+					return;
+				}
+			}
 		}
 
 		// → find first empty slot
@@ -172,11 +197,12 @@ public class Proto_InventoryFull : MonoBehaviour
 
 		// → pick up: hide world GO, store in slot
 		item.inInventory = true;
+		item.qty = 1;
 		item.worldGO.SetActive(false);
 		allItems[itemIndex] = item;
 		slots[target] = item;
 
-		// → auto-equip on pickup (like EquipWhenPickedUp in main source)
+		// → auto-equip on pickup (like EquipWhenPickedUp)
 		SelectSlot(target);
 		Debug.Log($"[Proto] Picked up '{item.name}' → slot {target} (auto-equipped)");
 	}
@@ -293,6 +319,7 @@ public class Proto_InventoryFull : MonoBehaviour
 		{
 			var icon = slotGOs[i].transform.Find("Icon").GetComponent<Image>();
 			var label = slotGOs[i].transform.Find("Label").GetComponent<TMP_Text>();
+			var count = slotGOs[i].transform.Find("Count").GetComponent<TMP_Text>();
 			var bg = slotGOs[i].GetComponent<Image>();
 
 			bool isSelected = (i == selectedSlot);
@@ -306,11 +333,13 @@ public class Proto_InventoryFull : MonoBehaviour
 				icon.enabled = true;
 				icon.color = slots[i].Value.color;
 				label.text = slots[i].Value.name;
+				count.text = slots[i].Value.qty > 1 ? $"x{slots[i].Value.qty}" : "";
 			}
 			else
 			{
 				icon.enabled = false;
 				label.text = "";
+				count.text = "";
 			}
 		}
 	}
@@ -319,14 +348,8 @@ public class Proto_InventoryFull : MonoBehaviour
 	{
 		if (!slots[index].HasValue) { infoPanelGO.SetActive(false); return; }
 		infoPanelGO.SetActive(true);
-		infoNameText.text = slots[index].Value.name;
-	}
-
-	void EquipSelected()
-	{
-		if (selectedSlot < 0 || !slots[selectedSlot].HasValue) return;
-		SelectSlot(selectedSlot); // SelectSlot already handles equip + toggle logic
-		Debug.Log($"[Proto] EQUIP BUTTON → slot {selectedSlot}");
+		var s = slots[index].Value;
+		infoNameText.text = s.qty > 1 ? $"{s.name} x{s.qty}" : s.name;
 	}
 
 	// ─── drag-drop handlers ─────────────────────────────────────
@@ -337,8 +360,10 @@ public class Proto_InventoryFull : MonoBehaviour
 		dragFromIndex = index;
 		slotGOs[index].transform.Find("Icon").gameObject.SetActive(false);
 		slotGOs[index].transform.Find("Label").gameObject.SetActive(false);
+		slotGOs[index].transform.Find("Count").gameObject.SetActive(false);
 		ghostGO.SetActive(true);
 		ghostImage.color = slots[index].Value.color;
+		ghostCountText.text = slots[index].Value.qty > 1 ? $"x{slots[index].Value.qty}" : "";
 		ghostGO.transform.SetAsLastSibling();
 	}
 
@@ -352,6 +377,7 @@ public class Proto_InventoryFull : MonoBehaviour
 	{
 		slotGOs[index].transform.Find("Icon").gameObject.SetActive(true);
 		slotGOs[index].transform.Find("Label").gameObject.SetActive(true);
+		slotGOs[index].transform.Find("Count").gameObject.SetActive(true);
 		ghostGO.SetActive(false);
 		// → drop outside UI = drop item to world
 		if (dragFromIndex >= 0 && e.pointerEnter == null)
@@ -385,7 +411,7 @@ public class Proto_InventoryFull : MonoBehaviour
 
 	// ─── world item spawning ────────────────────────────────────
 
-	void SpawnWorldItem(string name, Color color, Vector3 pos)
+	void SpawnWorldItem(string name, Color color, Vector3 pos, int maxStack = 1)
 	{
 		var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		go.name = name;
@@ -396,7 +422,7 @@ public class Proto_InventoryFull : MonoBehaviour
 		rb.mass = 0.5f;
 		var tag = go.AddComponent<WorldItemTag>();
 		tag.itemIndex = allItems.Count;
-		allItems.Add(new ItemData { name = name, color = color, worldGO = go, inInventory = false });
+		allItems.Add(new ItemData { name = name, color = color, worldGO = go, inInventory = false, qty = 1, maxStack = maxStack });
 	}
 
 	// ─── UI creation (all runtime) ──────────────────────────────
@@ -439,13 +465,23 @@ public class Proto_InventoryFull : MonoBehaviour
 		var tmp = labelGO.GetComponent<TMP_Text>();
 		tmp.fontSize = 8; tmp.alignment = TextAlignmentOptions.Center; tmp.raycastTarget = false;
 
+		// → count text (bottom-right corner, shows "x3" for stacked items)
+		var countGO = new GameObject("Count", typeof(RectTransform), typeof(TextMeshProUGUI));
+		countGO.transform.SetParent(slotGO.transform, false);
+		var countRT = countGO.GetComponent<RectTransform>();
+		countRT.anchorMin = new Vector2(0.6f, 0.6f); countRT.anchorMax = new Vector2(1f, 1f);
+		countRT.offsetMin = Vector2.zero; countRT.offsetMax = Vector2.zero;
+		var countTmp = countGO.GetComponent<TMP_Text>();
+		countTmp.fontSize = 12; countTmp.alignment = TextAlignmentOptions.BottomRight;
+		countTmp.color = Color.yellow; countTmp.raycastTarget = false;
+
 		var relay = slotGO.AddComponent<SlotRelay2>();
 		int idx = index;
 		relay.onBeginDrag = (e) => OnSlotBeginDrag(idx, e);
 		relay.onDrag = (e) => OnSlotDrag(e);
 		relay.onEndDrag = (e) => OnSlotEndDrag(idx, e);
 		relay.onDrop = (e) => OnSlotDrop(idx, e);
-		relay.onPointerDown = (e) => { SelectSlot(idx); ShowInfoPanel(idx); };
+		relay.onPointerDown = (e) => SelectSlot(idx);
 		return slotGO;
 	}
 
@@ -456,6 +492,15 @@ public class Proto_InventoryFull : MonoBehaviour
 		go.GetComponent<RectTransform>().sizeDelta = new Vector2(50, 50);
 		ghostImage = go.GetComponent<Image>();
 		ghostImage.raycastTarget = false;
+		// → count text on ghost
+		var countGO = new GameObject("GhostCount", typeof(RectTransform), typeof(TextMeshProUGUI));
+		countGO.transform.SetParent(go.transform, false);
+		var crt = countGO.GetComponent<RectTransform>();
+		crt.anchorMin = new Vector2(0.5f, 0f); crt.anchorMax = new Vector2(1f, 0.5f);
+		crt.offsetMin = Vector2.zero; crt.offsetMax = Vector2.zero;
+		ghostCountText = countGO.GetComponent<TMP_Text>();
+		ghostCountText.fontSize = 12; ghostCountText.alignment = TextAlignmentOptions.BottomRight;
+		ghostCountText.color = Color.yellow; ghostCountText.raycastTarget = false;
 		go.SetActive(false);
 		return go;
 	}
@@ -480,7 +525,7 @@ public class Proto_InventoryFull : MonoBehaviour
 		infoNameText.color = Color.white;
 		nameGO.AddComponent<LayoutElement>().preferredHeight = 30;
 
-		CreatePanelButton(panel.transform, "Equip (E)", new Color(0.2f, 0.6f, 0.8f), () => EquipSelected());
+		CreatePanelButton(panel.transform, "Equip (E)", new Color(0.2f, 0.6f, 0.8f), () => SelectSlot(selectedSlot));
 		CreatePanelButton(panel.transform, "Drop (G)", new Color(0.8f, 0.3f, 0.2f), () => DropFromSlot(selectedSlot));
 		panel.SetActive(false);
 		return panel;
@@ -505,17 +550,13 @@ public class Proto_InventoryFull : MonoBehaviour
 }
 
 /// <summary> Tags a world cube with its item index so raycast can identify it. </summary>
-public class WorldItemTag : MonoBehaviour
-{
-	public int itemIndex;
-}
+public class WorldItemTag : MonoBehaviour { public int itemIndex; }
 
 /// <summary> Inline EventSystem relay — same as SlotRelay but separate class name to avoid conflict. </summary>
 public class SlotRelay2 : MonoBehaviour,
 	IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerDownHandler
 {
 	public System.Action<PointerEventData> onBeginDrag, onDrag, onEndDrag, onDrop, onPointerDown;
-	//
 	public void OnBeginDrag(PointerEventData e) => onBeginDrag?.Invoke(e);
 	public void OnDrag(PointerEventData e) => onDrag?.Invoke(e);
 	public void OnEndDrag(PointerEventData e) => onEndDrag?.Invoke(e);

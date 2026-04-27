@@ -25,7 +25,7 @@ public class InteractableComputer : MonoBehaviour, IInteractable, IHighlightable
 	#endregion
 
 	#region public API - IIHighlight
-	public HighlightProfile GetHighlightProfile(BaseHeldTool activeTool)
+	public HighlightProfile GetHighlightProfile()
 	{
 		return this._highlightProfile;
 	} 
