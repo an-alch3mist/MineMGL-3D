@@ -43,20 +43,22 @@ public class MockTool : MonoBehaviour, IInventoryItem
 	public void HandleActiveInput() { /* no-op — mock has no actions */ }
 	public void SetOwnerContext(Camera cam, Transform vmc, Transform mag) { ownerCam = cam; }
 
-	/// <summary> Drop one from stack — instantiate a visual clone cube that drops with physics. </summary>
+	/// <summary> Drop one from stack — create a simple visual prop (cube with same color) 
+	/// that drops with physics. No MockTool component — just a mesh + rigidbody. </summary>
 	public void DropOneFromStack(Camera cam)
 	{
-		var clone = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		clone.transform.localScale = originalScale;
-		clone.GetComponent<Renderer>().material.color = _color;
-		clone.AddComponent<Rigidbody>();
+		// → create a fresh cube prop (not Instantiate — avoids MockTool component issues)
+		var prop = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		prop.name = $"{_name}_dropped";
+		prop.transform.localScale = originalScale;
+		prop.GetComponent<Renderer>().material.color = _color;
+		var rb = prop.AddComponent<Rigidbody>();
 		if (cam != null)
 		{
-			clone.transform.position = cam.transform.position + cam.transform.forward * 1.5f;
-			clone.GetComponent<Rigidbody>().linearVelocity = cam.transform.forward * 5f + Vector3.up * 2f;
+			prop.transform.position = cam.transform.position + cam.transform.forward * 1.5f;
+			rb.linearVelocity = cam.transform.forward * 5f + Vector3.up * 2f;
 		}
-		Destroy(clone, 5f); // auto-cleanup after 5 seconds
-		Debug.Log($"[MockTool] Dropped 1 clone of {_name}, remaining: {qty}");
+		Debug.Log($"[MockTool] Dropped 1 of {_name}, remaining: {qty}");
 	}
 
 	/// <summary> Equip: fire RaiseItemEquipped (so ItemEquipBridge sends camera via SetOwnerContext),
@@ -75,7 +77,7 @@ public class MockTool : MonoBehaviour, IInventoryItem
 		Debug.Log($"[MockTool] Equipped: {_name}");
 	}
 
-	/// <summary> Drop: restore scale, re-enable collider + physics, apply velocity. </summary>
+	/// <summary> Drop: position in front of camera, restore scale, re-enable collider + physics, apply forward velocity. </summary>
 	public void DropItem()
 	{
 		isEquipped = false;
@@ -84,15 +86,14 @@ public class MockTool : MonoBehaviour, IInventoryItem
 		transform.localScale = originalScale;
 		transform.parent = null;
 		var col = GetComponent<Collider>();
-		if (col != null) col.enabled = true; // re-enable physics interaction
+		if (col != null) col.enabled = true;
 		var rb = GetComponent<Rigidbody>();
-		if (rb != null)
+		if (rb != null) rb.isKinematic = false;
+		// → position exactly in front of camera + apply forward velocity
+		if (ownerCam != null)
 		{
-			rb.isKinematic = false;
-			if (ownerCam != null)
-				rb.linearVelocity = ownerCam.transform.forward * 5f + Vector3.up * 2f;
-			else
-				rb.linearVelocity = Vector3.up * 3f + Vector3.forward * 2f;
+			transform.position = ownerCam.transform.position + ownerCam.transform.forward * 1.5f;
+			if (rb != null) rb.linearVelocity = ownerCam.transform.forward * 5f + Vector3.up * 2f;
 		}
 		ownerCam = null;
 		Debug.Log($"[MockTool] Dropped: {_name}");

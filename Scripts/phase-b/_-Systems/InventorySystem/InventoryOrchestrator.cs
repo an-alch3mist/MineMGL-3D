@@ -88,11 +88,20 @@ public class InventoryOrchestrator : MonoBehaviour
 	{
 		if (dataService.GetIndexFor(item) >= 0) return;
 		int activeBeforeAdd = dataService.GetActiveSlotIndex();
+		var equippedBefore = previousActiveItem;
 		int idx = dataService.TryAdd(item, -1);
 		if (idx == -1) { Debug.Log("inventory full".colorTag("red")); return; }
 		item.GetGameObject().SetActive(false);
-		// → only switch if: equip flag set + hotbar slot + NOT the already-active slot (avoids toggle-off on stack)
-		if (item.GetShouldEquipWhenPickedUp() && idx < dataService.GetHotbarSize() && idx != activeBeforeAdd)
+		// → if stacked into active slot, re-show the equipped item (it might have been disrupted)
+		if (idx == activeBeforeAdd && equippedBefore != null)
+		{
+			equippedBefore.GetGameObject().SetActive(true);
+			equippedBefore.OnEquipped();
+			RefreshAllSlots();
+			return;
+		}
+		// → only switch if: equip flag set + hotbar slot
+		if (item.GetShouldEquipWhenPickedUp() && idx < dataService.GetHotbarSize())
 			SwitchToSlot(idx);
 		GameEvents.RaiseItemPickedUp(item);
 		RefreshAllSlots();
@@ -168,23 +177,29 @@ public class InventoryOrchestrator : MonoBehaviour
 	void HandleDrag(PointerEventData e)
 	{
 		_dragGhostIcon.transform.position = e.position;
-		if (dragFromIndex < 0) return;
+		if (dragFromIndex < 0 || _cam == null) return;
 		var slot = dataService.GetAllSlots()[dragFromIndex];
 		if (slot.item == null) return;
 		var go = slot.item.GetGameObject();
 		bool outsideUI = e.pointerCurrentRaycast.gameObject == null;
-		if (outsideUI && _cam != null)
+		if (outsideUI)
 		{
-			// → show 3D model at cursor ray position (preview before drop)
 			if (!dragPreviewActive)
 			{
+				// → first frame outside UI: show GO at full scale as drop preview
 				go.SetActive(true);
+				go.transform.parent = null;
+				go.transform.localScale = Vector3.one; // restore full world scale
 				var rb = go.GetComponent<Rigidbody>();
 				if (rb != null) rb.isKinematic = true;
+				var col = go.GetComponent<Collider>();
+				if (col != null) col.enabled = false; // no collision during preview
+				var rend = go.GetComponent<Renderer>();
+				if (rend != null) rend.enabled = true;
 				dragPreviewActive = true;
 			}
 			Ray ray = _cam.ScreenPointToRay(e.position);
-			go.transform.position = ray.GetPoint(2f);
+			go.transform.position = ray.GetPoint(_dropDistance) + Vector3.up * _dropHeightOffset;
 			go.transform.rotation = Quaternion.LookRotation(ray.direction);
 		}
 		else if (dragPreviewActive)
@@ -194,7 +209,7 @@ public class InventoryOrchestrator : MonoBehaviour
 			dragPreviewActive = false;
 		}
 	}
-	/// <summary> EndDrag: if outside UI → drop item at current position. If inside → cancel preview. </summary>
+	/// <summary> EndDrag: if outside UI → drop item at preview position. If inside → cancel. </summary>
 	void HandleEndDrag(UIEventRelay relay, PointerEventData e)
 	{
 		FIELD_SLOT[relay.Index].SetDragVisible(true);
@@ -204,36 +219,26 @@ public class InventoryOrchestrator : MonoBehaviour
 			var slot = dataService.GetAllSlots()[dragFromIndex];
 			if (slot.item != null)
 			{
-				// → calculate drop position: ray from cursor + height offset (prevents below-ground drops)
-				Vector3 dropPos = Vector3.zero;
-				Vector3 dropDir = Vector3.down;
-				if (_cam != null)
-				{
-					Ray ray = _cam.ScreenPointToRay(e.position);
-					dropPos = ray.GetPoint(_dropDistance) + Vector3.up * _dropHeightOffset;
-					dropDir = ray.direction;
-				}
-
 				if (slot.item.GetQty() > 1)
 				{
-					// → stacked: drop 1 clone at cursor position, keep rest
+					// → stacked: drop 1 clone, keep rest. Hide the original GO.
 					slot.item.AddQty(-1);
 					slot.item.DropOneFromStack(_cam);
 					slot.item.GetGameObject().SetActive(false);
 				}
 				else
 				{
-					// → last one: drop the actual GO at cursor ray position + height offset
+					// → last one: GO is already at preview position from HandleDrag.
+					// Just enable physics + collider and let it drop.
 					var go = slot.item.GetGameObject();
 					go.SetActive(true);
-					go.transform.position = dropPos;
 					var col = go.GetComponent<Collider>();
 					if (col != null) col.enabled = true;
 					var rb = go.GetComponent<Rigidbody>();
 					if (rb != null)
 					{
 						rb.isKinematic = false;
-						rb.linearVelocity = dropDir * 2f;
+						rb.linearVelocity = Vector3.down * 2f; // gentle drop from preview height
 					}
 					slot.item.DropItem();
 					dataService.Remove(slot.item);
