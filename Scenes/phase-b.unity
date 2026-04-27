@@ -23926,7 +23926,7 @@ GameObject:
   - component: {fileID: 7626779738899708139}
   - component: {fileID: 7626779738899708138}
   m_Layer: 7
-  m_Name: Cube  0.1x0.4 (3)
+  m_Name: Cube  0.1x0.4 (3) (toolHammer)
   m_TagString: grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
