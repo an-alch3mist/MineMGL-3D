@@ -18,6 +18,8 @@ public class MockTool : MonoBehaviour, IInventoryItem
 	[SerializeField] Sprite _icon;
 	[SerializeField] int _maxStack = 1;
 	[SerializeField] Color _color = Color.white;
+	[SerializeField] float _equippedScaleMultiplier = 0.3f;
+	[SerializeField] float _equippedDistance = 1.5f;
 	int qty = 1;
 	Renderer rend;
 	Camera ownerCam;
@@ -41,18 +43,39 @@ public class MockTool : MonoBehaviour, IInventoryItem
 	public void HandleActiveInput() { /* no-op — mock has no actions */ }
 	public void SetOwnerContext(Camera cam, Transform vmc, Transform mag) { ownerCam = cam; }
 
-	/// <summary> Equip: shrink cube + float in front of camera (like Proto_InventoryFull). </summary>
+	/// <summary> Drop one from stack — instantiate a visual clone cube that drops with physics. </summary>
+	public void DropOneFromStack(Camera cam)
+	{
+		var clone = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		clone.transform.localScale = originalScale;
+		clone.GetComponent<Renderer>().material.color = _color;
+		clone.AddComponent<Rigidbody>();
+		if (cam != null)
+		{
+			clone.transform.position = cam.transform.position + cam.transform.forward * 1.5f;
+			clone.GetComponent<Rigidbody>().linearVelocity = cam.transform.forward * 5f + Vector3.up * 2f;
+		}
+		Destroy(clone, 5f); // auto-cleanup after 5 seconds
+		Debug.Log($"[MockTool] Dropped 1 clone of {_name}, remaining: {qty}");
+	}
+
+	/// <summary> Equip: fire RaiseItemEquipped (so ItemEquipBridge sends camera via SetOwnerContext),
+	/// then shrink cube + float in front of camera via LateUpdate.
+	/// Disables collider so equipped item doesn't physically interact with world objects. </summary>
 	public void OnEquipped()
 	{
 		isEquipped = true;
+		GameEvents.RaiseItemEquipped(this);
 		if (rend != null) rend.enabled = true;
-		transform.localScale = originalScale * 0.3f; // small "viewmodel"
+		transform.localScale = originalScale * _equippedScaleMultiplier;
 		var rb = GetComponent<Rigidbody>();
 		if (rb != null) rb.isKinematic = true;
+		var col = GetComponent<Collider>();
+		if (col != null) col.enabled = false; // no physics interaction while equipped
 		Debug.Log($"[MockTool] Equipped: {_name}");
 	}
 
-	/// <summary> Drop: restore scale, show renderer, apply physics velocity. </summary>
+	/// <summary> Drop: restore scale, re-enable collider + physics, apply velocity. </summary>
 	public void DropItem()
 	{
 		isEquipped = false;
@@ -60,6 +83,8 @@ public class MockTool : MonoBehaviour, IInventoryItem
 		if (rend != null) rend.enabled = true;
 		transform.localScale = originalScale;
 		transform.parent = null;
+		var col = GetComponent<Collider>();
+		if (col != null) col.enabled = true; // re-enable physics interaction
 		var rb = GetComponent<Rigidbody>();
 		if (rb != null)
 		{
@@ -86,7 +111,7 @@ public class MockTool : MonoBehaviour, IInventoryItem
 	{
 		if (isEquipped && ownerCam != null)
 		{
-			transform.position = ownerCam.transform.position + ownerCam.transform.forward * 1.5f + Vector3.down * 0.3f;
+			transform.position = ownerCam.transform.position + ownerCam.transform.forward * _equippedDistance + Vector3.down * 0.3f;
 			transform.rotation = ownerCam.transform.rotation;
 		}
 	}

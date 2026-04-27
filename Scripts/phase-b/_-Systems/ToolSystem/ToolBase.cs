@@ -60,6 +60,9 @@ public class BaseHeldTool : BaseSellableItem, IInteractable, ISaveLoadableObject
 	public bool GetShouldEquipWhenPickedUp() => _equipWhenPickedUp;
 	public Sprite GetIcon() => _inventoryIcon ?? _programmerIcon;
 	public GameObject GetGameObject() => gameObject;
+	/// <summary> drop one from stack — ToolBuilder overrides to instantiate a BuildingCrate.
+	/// Base implementation does nothing (most tools don't stack). </summary>
+	public virtual void DropOneFromStack(Camera cam) { }
 	/// <summary> receives camera + viewmodel container + magnet pos from PlayerGrab via IInventoryItem.
 	/// Tool never knows PlayerMovement exists — only stores the transforms it needs. </summary>
 	public void SetOwnerContext(Camera cam, Transform viewModelContainer, Transform magnetToolPos)
@@ -68,8 +71,21 @@ public class BaseHeldTool : BaseSellableItem, IInteractable, ISaveLoadableObject
 		ownerViewModelContainer = viewModelContainer;
 		ownerMagnetToolPos = magnetToolPos;
 	}
-	/// <summary> called when inventory equips me — fires OnItemEquipped so PlayerGrab sends context </summary>
-	public virtual void OnEquipped() => GameEvents.RaiseItemEquipped(this);
+	/// <summary> called when inventory equips me — fires OnItemEquipped so ItemEquipBridge sends context,
+	/// then re-parents to ViewModelContainer (OnEnable ran before context arrived). </summary>
+	public virtual void OnEquipped()
+	{
+		GameEvents.RaiseItemEquipped(this);
+		// → OnEnable already fired with null container — now context is set, re-parent
+		if (ownerViewModelContainer != null)
+		{
+			HideWorldModel();
+			HideViewModel(hide: false);
+			transform.position = ownerViewModelContainer.position;
+			transform.rotation = ownerViewModelContainer.rotation;
+			transform.parent = ownerViewModelContainer;
+		}
+	}
 	/// <summary> label for the info panel equip button — overridden by ToolBuilder to "Build" </summary>
 	public virtual string GetEquipButtonLabel() => "Equip";
 	/// <summary> per-frame input routing when I'm the active item — routes LMB/RMB/R/Q to virtual methods </summary>

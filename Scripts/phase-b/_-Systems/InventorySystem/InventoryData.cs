@@ -21,14 +21,18 @@ public interface IInventoryItem
 	string GetName();
 	string GetDescription();
 	int GetQty();
-	Sprite GetIcon();
-
 	void SetQty(int qty);
 	void AddQty(int delta);
 	int GetMaxAmount();
 	bool GetShouldEquipWhenPickedUp();
+	Sprite GetIcon();
 	GameObject GetGameObject();
+	/// <summary> drop this item fully (last one from slot) — show GO, apply velocity </summary>
 	void DropItem();
+	/// <summary> drop one from a stack — instantiate or spawn a copy in the world.
+	/// Default: do nothing (non-stackable items never call this). Override for stackable items
+	/// like ToolBuilder which instantiate a BuildingCrate on drop. </summary>
+	void DropOneFromStack(Camera cam);
 	/// <summary> called when this item becomes the active equipped item — tool fires RaiseToolEquipped,
 	/// non-tool items can do nothing or fire their own event </summary>
 	void OnEquipped();
@@ -105,37 +109,67 @@ public class InventoryDataService
 		return -1;
 	}
 
-	/// <summary> stacks if possible (same type + space) → preferred slot → first empty. returns index or -1.
-	/// Stacking: if item.GetMaxAmount() > 1, finds matching slot with space, adds qty. </summary>
+	/// <summary> Stacks if possible → preferred slot → first empty. Returns slot index or -1.
+	/// Stacking scans ALL slots (hotbar + extended). Same type + space → increment qty.
+	/// If incoming qty fully absorbed → returns stack target index (incoming GO should be destroyed by caller).
+	/// If partial absorb → remainder goes to empty slot. If no space at all → returns -1. </summary>
 	public int TryAdd(IInventoryItem item, int preferredSlot = -1)
 	{
-		// → stacking: if item supports stacking, find matching and add qty
+		// → stacking: scan ALL slots (hotbar + extended) for matching type with space
 		if (item.GetMaxAmount() > 1)
 		{
 			for (int i = 0; i < SLOT.Count; i++)
 			{
-				if (SLOT[i].item != null && SLOT[i].item.GetType() == item.GetType()
+				if (SLOT[i].item != null
+					&& SLOT[i].item.GetType() == item.GetType()
+					&& SLOT[i].item.GetName() == item.GetName() // same name too (two ToolBuilders with different defs don't stack)
 					&& SLOT[i].item.GetQty() < SLOT[i].item.GetMaxAmount())
 				{
 					int space = SLOT[i].item.GetMaxAmount() - SLOT[i].item.GetQty();
 					int add = (item.GetQty() <= space) ? item.GetQty() : space;
 					SLOT[i].item.AddQty(add);
 					item.AddQty(-add);
-					if (item.GetQty() <= 0) return i;
+					if (item.GetQty() <= 0) return i; // fully absorbed
 				}
 			}
 		}
-		// → preferred slot
+		// → remainder (or non-stackable): preferred slot → first empty
+		if (item.GetQty() <= 0) return -1; // shouldn't happen but guard
 		int target = -1;
 		if (preferredSlot >= 0 && preferredSlot < SLOT.Count && SLOT[preferredSlot].item == null)
 			target = preferredSlot;
-		// → first empty
 		if (target == -1)
 			for (int i = 0; i < SLOT.Count; i++)
 				if (SLOT[i].item == null) { target = i; break; }
-		if (target == -1) return -1;
+		if (target == -1) return -1; // full
 		SLOT[target].item = item;
 		return target;
+	}
+
+	/// <summary> Can two items in different slots be merged? Same type + same name + target has space. </summary>
+	public bool CanStack(int fromIndex, int toIndex)
+	{
+		if (fromIndex < 0 || toIndex < 0 || fromIndex >= SLOT.Count || toIndex >= SLOT.Count) return false;
+		var from = SLOT[fromIndex].item;
+		var to = SLOT[toIndex].item;
+		if (from == null || to == null) return false;
+		return from.GetType() == to.GetType()
+			&& from.GetName() == to.GetName()
+			&& to.GetQty() < to.GetMaxAmount();
+	}
+
+	/// <summary> Merge from → to (as much as fits). Returns true if from is fully absorbed (caller should remove). </summary>
+	public bool TryMerge(int fromIndex, int toIndex)
+	{
+		if (!CanStack(fromIndex, toIndex)) return false;
+		var from = SLOT[fromIndex].item;
+		var to = SLOT[toIndex].item;
+		int space = to.GetMaxAmount() - to.GetQty();
+		int add = (from.GetQty() <= space) ? from.GetQty() : space;
+		to.AddQty(add);
+		from.AddQty(-add);
+		if (from.GetQty() <= 0) { SLOT[fromIndex].item = null; return true; }
+		return false;
 	}
 
 	/// <summary> nulls the slot containing this item </summary>

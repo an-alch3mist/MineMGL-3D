@@ -27,6 +27,8 @@ public class InventoryOrchestrator : MonoBehaviour
 	[SerializeField] Field_SelectedItemInfo _selectedItemInfo;
 	[Header("Drop")]
 	[SerializeField] Camera _cam;
+	[SerializeField] float _dropHeightOffset = 1f;
+	[SerializeField] float _dropDistance = 2f;
 	#endregion
 
 	#region private API
@@ -35,6 +37,7 @@ public class InventoryOrchestrator : MonoBehaviour
 	IInventoryItem previousActiveItem;
 	IInventoryItem selectedItem;
 	int dragFromIndex = -1;
+	bool dragPreviewActive;
 
 	void BuildSlotFields()
 	{
@@ -84,10 +87,12 @@ public class InventoryOrchestrator : MonoBehaviour
 	void HandleItemPickup(IInventoryItem item)
 	{
 		if (dataService.GetIndexFor(item) >= 0) return;
+		int activeBeforeAdd = dataService.GetActiveSlotIndex();
 		int idx = dataService.TryAdd(item, -1);
 		if (idx == -1) { Debug.Log("inventory full".colorTag("red")); return; }
 		item.GetGameObject().SetActive(false);
-		if (item.GetShouldEquipWhenPickedUp() && idx < dataService.GetHotbarSize())
+		// → only switch if: equip flag set + hotbar slot + NOT the already-active slot (avoids toggle-off on stack)
+		if (item.GetShouldEquipWhenPickedUp() && idx < dataService.GetHotbarSize() && idx != activeBeforeAdd)
 			SwitchToSlot(idx);
 		GameEvents.RaiseItemPickedUp(item);
 		RefreshAllSlots();
@@ -121,13 +126,17 @@ public class InventoryOrchestrator : MonoBehaviour
 		var item = dataService.GetActiveItem();
 		if (item == null) return;
 		// → stacked: drop 1, keep rest in slot
+		// Note: with real tools (main source), stacking only applies to ToolBuilder which instantiates
+		// a new BuildingCrate GO on drop. MockTool has only 1 GO so we can't show a physical drop
+		// for qty > 1. The count decrements visually in the slot.
 		if (item.GetQty() > 1)
 		{
 			item.AddQty(-1);
+			item.DropOneFromStack(_cam);
 			RefreshAllSlots();
 			return;
 		}
-		// → last one: drop the actual item
+		// → last one: drop the actual GO into the world
 		item.DropItem();
 		dataService.Remove(item);
 		previousActiveItem = null;
@@ -154,7 +163,38 @@ public class InventoryOrchestrator : MonoBehaviour
 		_dragGhostAmountText.text = slot.item.GetQty() > 1 ? $"x{slot.item.GetQty()}" : "";
 		_dragGhostIcon.transform.SetAsLastSibling();
 	}
-	void HandleDrag(PointerEventData e) => _dragGhostIcon.transform.position = e.position;
+	/// <summary> During drag: move ghost. If outside UI → show 3D model preview at cursor ray.
+	/// If back over UI → hide model. Drop only happens on EndDrag release. </summary>
+	void HandleDrag(PointerEventData e)
+	{
+		_dragGhostIcon.transform.position = e.position;
+		if (dragFromIndex < 0) return;
+		var slot = dataService.GetAllSlots()[dragFromIndex];
+		if (slot.item == null) return;
+		var go = slot.item.GetGameObject();
+		bool outsideUI = e.pointerCurrentRaycast.gameObject == null;
+		if (outsideUI && _cam != null)
+		{
+			// → show 3D model at cursor ray position (preview before drop)
+			if (!dragPreviewActive)
+			{
+				go.SetActive(true);
+				var rb = go.GetComponent<Rigidbody>();
+				if (rb != null) rb.isKinematic = true;
+				dragPreviewActive = true;
+			}
+			Ray ray = _cam.ScreenPointToRay(e.position);
+			go.transform.position = ray.GetPoint(2f);
+			go.transform.rotation = Quaternion.LookRotation(ray.direction);
+		}
+		else if (dragPreviewActive)
+		{
+			// → dragged back over UI → hide model
+			go.SetActive(false);
+			dragPreviewActive = false;
+		}
+	}
+	/// <summary> EndDrag: if outside UI → drop item at current position. If inside → cancel preview. </summary>
 	void HandleEndDrag(UIEventRelay relay, PointerEventData e)
 	{
 		FIELD_SLOT[relay.Index].SetDragVisible(true);
@@ -164,34 +204,65 @@ public class InventoryOrchestrator : MonoBehaviour
 			var slot = dataService.GetAllSlots()[dragFromIndex];
 			if (slot.item != null)
 			{
-				// → stacked: drop 1, keep rest
+				// → calculate drop position: ray from cursor + height offset (prevents below-ground drops)
+				Vector3 dropPos = Vector3.zero;
+				Vector3 dropDir = Vector3.down;
+				if (_cam != null)
+				{
+					Ray ray = _cam.ScreenPointToRay(e.position);
+					dropPos = ray.GetPoint(_dropDistance) + Vector3.up * _dropHeightOffset;
+					dropDir = ray.direction;
+				}
+
 				if (slot.item.GetQty() > 1)
 				{
+					// → stacked: drop 1 clone at cursor position, keep rest
 					slot.item.AddQty(-1);
+					slot.item.DropOneFromStack(_cam);
+					slot.item.GetGameObject().SetActive(false);
 				}
 				else
 				{
-					// → last one: drop from cursor position via screen-to-world ray
-					if (_cam != null)
+					// → last one: drop the actual GO at cursor ray position + height offset
+					var go = slot.item.GetGameObject();
+					go.SetActive(true);
+					go.transform.position = dropPos;
+					var col = go.GetComponent<Collider>();
+					if (col != null) col.enabled = true;
+					var rb = go.GetComponent<Rigidbody>();
+					if (rb != null)
 					{
-						Ray ray = _cam.ScreenPointToRay(e.position);
-						var go = slot.item.GetGameObject();
-						go.transform.position = ray.GetPoint(2f);
-						var rb = go.GetComponent<Rigidbody>();
-						if (rb != null) rb.linearVelocity = ray.direction * 5f;
+						rb.isKinematic = false;
+						rb.linearVelocity = dropDir * 2f;
 					}
 					slot.item.DropItem();
 					dataService.Remove(slot.item);
 				}
 			}
 		}
+		else if (dragPreviewActive)
+		{
+			// → dragged back onto UI → cancel, hide model
+			var slot = dataService.GetAllSlots()[dragFromIndex];
+			if (slot.item != null) slot.item.GetGameObject().SetActive(false);
+		}
+		dragPreviewActive = false;
 		dragFromIndex = -1;
 		RefreshAllSlots();
 	}
+	/// <summary> Drop on target slot: merge if stackable, swap otherwise. </summary>
 	void HandleDrop(UIEventRelay relay, PointerEventData e)
 	{
 		if (dragFromIndex < 0 || dragFromIndex == relay.Index) return;
-		dataService.Swap(dragFromIndex, relay.Index);
+		// → try merge first (drag Dynamite x2 onto Dynamite x1 → Dynamite x3)
+		if (dataService.CanStack(dragFromIndex, relay.Index))
+		{
+			dataService.TryMerge(dragFromIndex, relay.Index);
+		}
+		else
+		{
+			dataService.Swap(dragFromIndex, relay.Index);
+		}
 		RefreshAllSlots();
 	}
 	#endregion
@@ -222,6 +293,7 @@ public class InventoryOrchestrator : MonoBehaviour
 		if (selectedItem.GetQty() > 1)
 		{
 			selectedItem.AddQty(-1);
+			selectedItem.DropOneFromStack(_cam);
 			UpdateSelectedItemInfo(selectedItem);
 			RefreshAllSlots();
 			return;
