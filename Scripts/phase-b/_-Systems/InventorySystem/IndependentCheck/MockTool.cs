@@ -20,9 +20,12 @@ public class MockTool : MonoBehaviour, IInventoryItem
 	[SerializeField] Color _color = Color.white;
 	[SerializeField] float _equippedScaleMultiplier = 0.3f;
 	[SerializeField] float _equippedDistance = 1.5f;
+	[SerializeField] Vector3 _equippedOffset = new Vector3(0.4f, -0.3f, 0f); // right + down (like FPS viewmodel)
+	[SerializeField] Vector3 _dropOffset = new Vector3(0.5f, -0.3f, 1.5f); // right + down + forward
 	int qty = 1;
 	Renderer rend;
 	Camera ownerCam;
+	Transform ownerViewModelContainer;
 	Vector3 originalScale;
 	bool isEquipped;
 
@@ -41,21 +44,39 @@ public class MockTool : MonoBehaviour, IInventoryItem
 	public GameObject GetGameObject() => gameObject;
 	public string GetEquipButtonLabel() => "Equip";
 	public void HandleActiveInput() { /* no-op — mock has no actions */ }
-	public void SetOwnerContext(Camera cam, Transform vmc, Transform mag) { ownerCam = cam; }
+	public void SetOwnerContext(Camera cam, Transform vmc, Transform mag) { ownerCam = cam; ownerViewModelContainer = vmc; }
 
-	/// <summary> Drop one from stack — create a simple visual prop (cube with same color) 
-	/// that drops with physics. No MockTool component — just a mesh + rigidbody. </summary>
+	/// <summary> Drop one from stack — exact copy with ALL components, values, and behavior.
+	/// Clone is a fully functional MockTool that can be re-picked from the world. </summary>
 	public void DropOneFromStack(Camera cam)
 	{
-		// → create a fresh cube prop (not Instantiate — avoids MockTool component issues)
-		var prop = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		prop.name = $"{_name}_dropped";
-		prop.transform.localScale = originalScale;
-		prop.GetComponent<Renderer>().material.color = _color;
-		var rb = prop.AddComponent<Rigidbody>();
+		var clone = Instantiate(gameObject);
+		// → reset clone to fresh world state (not equipped, qty=1, full scale)
+		var cloneMock = clone.GetComponent<MockTool>();
+		if (cloneMock != null)
+		{
+			cloneMock.isEquipped = false;
+			cloneMock.qty = 1;
+			cloneMock.ownerCam = null;
+			cloneMock.ownerViewModelContainer = null;
+		}
+		clone.name = $"{_name}_world";
+		clone.SetActive(true);
+		clone.transform.parent = null;
+		clone.transform.localScale = originalScale;
+		var rend2 = clone.GetComponent<Renderer>();
+		if (rend2 != null) rend2.enabled = true;
+		var col = clone.GetComponent<Collider>();
+		if (col != null) col.enabled = true;
+		var rb = clone.GetComponent<Rigidbody>();
+		if (rb == null) rb = clone.AddComponent<Rigidbody>();
+		rb.isKinematic = false;
 		if (cam != null)
 		{
-			prop.transform.position = cam.transform.position + cam.transform.forward * 1.5f;
+			clone.transform.position = cam.transform.position
+				+ cam.transform.right * _dropOffset.x
+				+ cam.transform.up * _dropOffset.y
+				+ cam.transform.forward * _dropOffset.z;
 			rb.linearVelocity = cam.transform.forward * 5f + Vector3.up * 2f;
 		}
 		Debug.Log($"[MockTool] Dropped 1 of {_name}, remaining: {qty}");
@@ -73,7 +94,14 @@ public class MockTool : MonoBehaviour, IInventoryItem
 		var rb = GetComponent<Rigidbody>();
 		if (rb != null) rb.isKinematic = true;
 		var col = GetComponent<Collider>();
-		if (col != null) col.enabled = false; // no physics interaction while equipped
+		if (col != null) col.enabled = false;
+		// → parent to ViewModelContainer (moves with camera automatically, no LateUpdate needed)
+		if (ownerViewModelContainer != null)
+		{
+			transform.parent = ownerViewModelContainer;
+			transform.localPosition = new Vector3(_equippedOffset.x, _equippedOffset.y, _equippedDistance);
+			transform.localRotation = Quaternion.identity;
+		}
 		Debug.Log($"[MockTool] Equipped: {_name}");
 	}
 
@@ -89,10 +117,13 @@ public class MockTool : MonoBehaviour, IInventoryItem
 		if (col != null) col.enabled = true;
 		var rb = GetComponent<Rigidbody>();
 		if (rb != null) rb.isKinematic = false;
-		// → position exactly in front of camera + apply forward velocity
+		// → position at offset from camera (right + down + forward) + apply forward velocity
 		if (ownerCam != null)
 		{
-			transform.position = ownerCam.transform.position + ownerCam.transform.forward * 1.5f;
+			transform.position = ownerCam.transform.position
+				+ ownerCam.transform.right * _dropOffset.x
+				+ ownerCam.transform.up * _dropOffset.y
+				+ ownerCam.transform.forward * _dropOffset.z;
 			if (rb != null) rb.linearVelocity = ownerCam.transform.forward * 5f + Vector3.up * 2f;
 		}
 		ownerCam = null;
@@ -107,15 +138,7 @@ public class MockTool : MonoBehaviour, IInventoryItem
 		if (rend != null) rend.enabled = true;
 	}
 
-	/// <summary> Float in front of camera while equipped (like Proto_InventoryFull). </summary>
-	void LateUpdate()
-	{
-		if (isEquipped && ownerCam != null)
-		{
-			transform.position = ownerCam.transform.position + ownerCam.transform.forward * _equippedDistance + Vector3.down * 0.3f;
-			transform.rotation = ownerCam.transform.rotation;
-		}
-	}
+	// No LateUpdate needed — parented to ViewModelContainer, moves with camera automatically.
 
 	// ── Click to pickup (simple — no interaction wheel needed) ──
 	void OnMouseDown()
