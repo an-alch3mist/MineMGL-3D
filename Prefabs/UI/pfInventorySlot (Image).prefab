@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 2949170133680799665}
   - component: {fileID: 6028355127061692974}
   - component: {fileID: 3222106531758558017}
-  - component: {fileID: 3347785950040188359}
+  - component: {fileID: 4452976293102450348}
   m_Layer: 5
   m_Name: pfInventorySlot (Image)
   m_TagString: Untagged
@@ -116,7 +116,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3347785950040188359
+--- !u!114 &4452976293102450348
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -125,9 +125,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1416104119551337826}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5352b420c1160fc42aa1eaa6d4169a33, type: 3}
+  m_Script: {fileID: 11500000, guid: b0dc9cd084d1a0a4ebc8aa9bd8931939, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Field_Inventory
+  m_EditorClassIdentifier: Assembly-CSharp::Field_InventorySlot
   _icon: {fileID: 5608653094636298038}
   _bg: {fileID: 3222106531758558017}
   _nameText: {fileID: 2791220053981634532}
@@ -135,6 +135,7 @@ MonoBehaviour:
   _orangeBarThing: {fileID: 6827691723289232010}
   _hideWhenDragged: {fileID: 420161466963738648}
   _selectedColor: {r: 0.4, g: 0.8, b: 0.6, a: 0.2}
+  _equippedColor: {r: 0.2, g: 0.5, b: 0.9, a: 0.4}
   _notSelectedColor: {r: 0.2, g: 0.2, b: 0.2, a: 0.1}
   _hoveredColor: {r: 1, g: 1, b: 1, a: 0.2}
 --- !u!1 &1974092870328798649
@@ -451,7 +452,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -541,7 +542,7 @@ GameObject:
   - component: {fileID: 6835191923182809173}
   - component: {fileID: 8114391987052998430}
   m_Layer: 5
-  m_Name: organeBar (image)
+  m_Name: orangeBar (image)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

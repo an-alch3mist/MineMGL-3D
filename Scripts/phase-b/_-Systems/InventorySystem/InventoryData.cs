@@ -77,8 +77,8 @@ public class InventoryDataService
 	#region private API
 	List<InventorySlot> SLOT = new List<InventorySlot>();
 	int activeSlotIndex = 0;
-	public static int HOTBAR_SIZE = 10;
-	public static int TOTAL_SIZE = 40;
+	public static int HOTBAR_SIZE = 5;
+	public static int TOTAL_SIZE = 15;
 	#endregion
 
 	#region public API

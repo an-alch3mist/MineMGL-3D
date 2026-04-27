@@ -136,11 +136,11 @@ public class PlayerGrab : MonoBehaviour
 		rb.isKinematic = false;
 		IgnoreAllCollisions(heldObject, gameObject, true);
 		rb.interpolation = RigidbodyInterpolation.Interpolate;
-		grabJoint.breakForce = 120f;
+		grabJoint.breakForce = 150f;
 		grabJoint.breakTorque = 20f;
 		grabJoint.transform.position = hit.point;
 		grabJoint.anchor = Vector3.zero;
-		grabJoint.spring = 100f;
+		grabJoint.spring = 120f;
 		grabJoint.damper = 25f;
 		grabJoint.maxDistance = 0f;
 		grabJoint.connectedBody = rb;
@@ -149,8 +149,9 @@ public class PlayerGrab : MonoBehaviour
 		_rope.enabled = true;
 		grabOriginalDrag = rb.linearDamping;
 		grabOriginalAngularDrag = rb.angularDamping;
-		rb.linearDamping = 2.5f;
-		rb.angularDamping = 0.3f;
+		//
+		rb.linearDamping = 4f;
+		rb.angularDamping = 100f;
 	}
 	/// <summary> Destroys the SpringJoint, deactivates the dragger, restores the object’s original
 	/// drag values, re-enables collisions, hides the rope, and starts a 3s coroutine to disable

@@ -65,10 +65,10 @@ public class UIManager : Singleton<UIManager>
 		//
 		if (isAnyMenuOpen == false)
 		{
-			/*
 			// Phase B: Tab → inventory
 			if (INPUT.K.InstantDown(KeyCode.Tab))
 				GameEvents.RaiseOpenInventoryView();
+			/*
 			// Phase F: Q → quest tree
 			if (INPUT.K.InstantDown(KeyCode.Q)) 
 				GameEvents.RaiseOpenQuestTreeView();

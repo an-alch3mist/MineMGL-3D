@@ -25,6 +25,8 @@ public class InventoryOrchestrator : MonoBehaviour
 	[SerializeField] TMP_Text _dragGhostAmountText;
 	[Header("Selected Item Info")]
 	[SerializeField] Field_SelectedItemInfo _selectedItemInfo;
+	[Header("Drop")]
+	[SerializeField] Camera _cam;
 	#endregion
 
 	#region private API
@@ -118,6 +120,14 @@ public class InventoryOrchestrator : MonoBehaviour
 	{
 		var item = dataService.GetActiveItem();
 		if (item == null) return;
+		// → stacked: drop 1, keep rest in slot
+		if (item.GetQty() > 1)
+		{
+			item.AddQty(-1);
+			RefreshAllSlots();
+			return;
+		}
+		// → last one: drop the actual item
 		item.DropItem();
 		dataService.Remove(item);
 		previousActiveItem = null;
@@ -152,7 +162,28 @@ public class InventoryOrchestrator : MonoBehaviour
 		if (e.pointerEnter == null && dragFromIndex >= 0)
 		{
 			var slot = dataService.GetAllSlots()[dragFromIndex];
-			if (slot.item != null) { slot.item.DropItem(); dataService.Remove(slot.item); }
+			if (slot.item != null)
+			{
+				// → stacked: drop 1, keep rest
+				if (slot.item.GetQty() > 1)
+				{
+					slot.item.AddQty(-1);
+				}
+				else
+				{
+					// → last one: drop from cursor position via screen-to-world ray
+					if (_cam != null)
+					{
+						Ray ray = _cam.ScreenPointToRay(e.position);
+						var go = slot.item.GetGameObject();
+						go.transform.position = ray.GetPoint(2f);
+						var rb = go.GetComponent<Rigidbody>();
+						if (rb != null) rb.linearVelocity = ray.direction * 5f;
+					}
+					slot.item.DropItem();
+					dataService.Remove(slot.item);
+				}
+			}
 		}
 		dragFromIndex = -1;
 		RefreshAllSlots();
@@ -187,6 +218,15 @@ public class InventoryOrchestrator : MonoBehaviour
 	void DropSelectedItem()
 	{
 		if (selectedItem == null) return;
+		// → stacked: drop 1, keep rest in slot, update info panel count
+		if (selectedItem.GetQty() > 1)
+		{
+			selectedItem.AddQty(-1);
+			UpdateSelectedItemInfo(selectedItem);
+			RefreshAllSlots();
+			return;
+		}
+		// → last one: drop the actual item
 		selectedItem.DropItem();
 		dataService.Remove(selectedItem);
 		GameEvents.RaiseItemDropped(selectedItem);
