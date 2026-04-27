@@ -81,6 +81,7 @@ public class InteractionWheelUI : Singleton<InteractionWheelUI>
 			field._button.onClick.AddListener(() =>
 			{
 				interactable.Interact(option);
+				GameEvents.RaiseCloseInteractionView();
 			});
 		}
 	}
