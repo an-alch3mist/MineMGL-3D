@@ -1922,7 +1922,7 @@ GameObject:
   - component: {fileID: 473664133759243431}
   - component: {fileID: 3832137467608270670}
   - component: {fileID: 4006983487814743352}
-  - component: {fileID: 5944989779925945949}
+  - component: {fileID: 8247282891433971689}
   m_Layer: 5
   m_Name: 'pfShopCartItem(Panel) '
   m_TagString: Untagged
@@ -1995,7 +1995,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5944989779925945949
+--- !u!114 &8247282891433971689
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2004,7 +2004,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8830860304838234322}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57cd077aef4937749b3960ba2cf85f27, type: 3}
+  m_Script: {fileID: 11500000, guid: 94daa7d9cacd9c243992b9457de5aca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Field_ShopCartItem
   _nameText: {fileID: 7290251398070242347}

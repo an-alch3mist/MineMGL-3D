@@ -144,7 +144,7 @@ public class ShopUIOrchestrator : MonoBehaviour
 			var field = DOC__CartItem__Field[cartItem];
 			float cost = cartItem.wShopItem.itemDef.defaultPrice * cartItem.qty;
 
-			UtilsPhaseA.TrySpawnAtPoint(cartItem.wShopItem.itemDef, cartItem.qty);
+			SpawnAtPoint(cartItem.wShopItem.itemDef.pfObject, cartItem.qty);
 			// remove
 			shopDataService.RemoveCartItem(cartItem);
 			GameObject.Destroy(DOC__CartItem__Field[cartItem].gameObject);
@@ -155,6 +155,16 @@ public class ShopUIOrchestrator : MonoBehaviour
 		}
 		RefreshAllRequired();
 		GameEvents.RaiseCloseShopView();
+	}
+	//
+	static void SpawnAtPoint(GameObject pfObject, int qty)
+	{
+		var point = ShopSpawnPoint.GetRandomSpawnPoint();
+		for (int i0 = 0; i0 < qty; i0 += 1)
+		{
+			Vector3 offset = C.RandomInsideUnitSphere(); offset.y = offset.y.abs();
+			GameObject.Instantiate(pfObject).transform.position = point + offset * 0.3f;
+		}
 	}
 	//
 	void BuildAndOrchestrateCategoryView()

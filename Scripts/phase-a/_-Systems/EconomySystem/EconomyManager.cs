@@ -40,3 +40,21 @@ public class EconomyManager : Singleton<EconomyManager>
 	}
 	#endregion
 }
+
+public static class MoneyExtension
+{
+	#region extension
+	/// <summary>
+	/// eg: 12,345.00
+	/// </summary>
+	/// <param name="money"></param>
+	/// <returns></returns>
+	public static string formatMoney(this float money) => $"${money:#,##0.00}";
+	/// <summary>
+	/// eg: 12,345
+	/// </summary>
+	/// <param name="money"></param>
+	/// <returns></returns>
+	public static string formatMoneyShort(this float money) => $"${money:#,##0.##}";
+	#endregion
+}

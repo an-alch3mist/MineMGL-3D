@@ -55,15 +55,22 @@ public class ShopUI : MonoBehaviour
 		{
 			Debug.Log("shopUI first time enabled".colorTag("lime"));
 			// ------------------------------------------------------------------------------------------- //
+			// init dataService just once;
 			shopDataService.BuildCategories(this._CATEGORY);
-			this._orchestrator.InitBuildOrchestrateAndSubscribe(shopDataService, this._CATEGORY); // link the shopDataService and the LIST<category> into orchestor
+			
 			// ------------------------------------------------------------------------------------------- //
 			// Self Subscribed to View and disabled after setup, // TODO Unsubscribe on disable() / on destroy()
-			GameEvents.OnOpenShopView += () => { Singleton<UIManager>.Ins.CloseAllSubManager(); this.gameObject.SetActive(true); };
+			GameEvents.OnOpenShopView += () => 
+			{
+				Singleton<UIManager>.Ins.CloseAllSubManager(); this.gameObject.SetActive(true);
+				// rebuild, hide  or unHide categories based on required.
+				this._orchestrator.InitBuildOrchestrateAndSubscribe(shopDataService, this._CATEGORY); // link the shopDataService and the LIST<category> into orchestor
+			};
 			GameEvents.OnCloseShopView += () => this.gameObject.SetActive(false);
 			// 
 			this.gameObject.SetActive(false); // once all setup done, deactivate;
 			isFirstEnable = false;
+			return;
 		}
 		GameEvents.RaiseMenuStateChanged(isAnyMenuOpen: true);
 	}

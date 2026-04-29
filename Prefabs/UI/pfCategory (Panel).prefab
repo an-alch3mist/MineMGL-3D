@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2494238592495202735}
   - component: {fileID: 3003644230144929879}
   - component: {fileID: 2387953030881528163}
-  - component: {fileID: 7190237246221859976}
+  - component: {fileID: 3147916058677553565}
   m_Layer: 5
   m_Name: pfCategory (Panel)
   m_TagString: Untagged
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7190237246221859976
+--- !u!114 &3147916058677553565
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,7 +86,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2061515110932661325}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1475889e8817ab4f949f63504f4e54e, type: 3}
+  m_Script: {fileID: 11500000, guid: a56590775310f034e88134f031e09863, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Field_ShopCategory
   button: {fileID: 5330039861803424881}

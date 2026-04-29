@@ -24,8 +24,7 @@ public class InteractionWheelUI : Singleton<InteractionWheelUI>
 			// selfActive Subscribed by Itself At Start >>
 			GameEvents.OnOpenInteractionView += (interactable) =>
 			{
-				Singleton<UIManager>.Ins.CloseAllSubManager();
-				this.gameObject.SetActive(true);
+				Singleton<UIManager>.Ins.CloseAllSubManager(); this.gameObject.SetActive(true);
 				ErazeAndBuildOptionsView(interactable.GetOptions(), interactable);
 			};
 			GameEvents.OnCloseInteractionView += () => this.gameObject.SetActive(false);
