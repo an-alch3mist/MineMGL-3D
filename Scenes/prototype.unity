@@ -559,7 +559,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1715124823
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -911,11 +911,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2139682948}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f86177224a4bf534f9402d03dbc9393e, type: 3}
+  m_Script: {fileID: 11500000, guid: f2be804763e4a0342b10cc6bca81f7cc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Proto_InventoryFull
-  _canvas: {fileID: 628335421}
-  _cam: {fileID: 2010214057}
+  m_EditorClassIdentifier: Assembly-CSharp::Proto_PhaseC_Integration
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
